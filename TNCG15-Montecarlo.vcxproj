@@ -86,10 +86,20 @@
     <ClCompile Include="common\Windows\glew.c" />
     <ClCompile Include="common\Windows\MicroGlut.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\main.frag" />
     <None Include="shaders\main.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Plane.h" />
+    <ClInclude Include="Primitive.h" />
+    <ClInclude Include="Ray.h" />
+    <ClInclude Include="Sphere.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

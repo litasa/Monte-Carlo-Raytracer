@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Shaders">
       <UniqueIdentifier>{cd04c138-1b2e-4f0a-8674-cc619a1c4031}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Geometry">
+      <UniqueIdentifier>{a481116c-7fa3-4520-a287-9c4a45a515c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,6 +45,15 @@
     <ClCompile Include="common\VectorUtils3.c">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
+    <ClCompile Include="Primitive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\main.frag">
@@ -50,5 +62,22 @@
     <None Include="shaders\main.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Ray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -51,4 +51,18 @@
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Pixel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TgaWriter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

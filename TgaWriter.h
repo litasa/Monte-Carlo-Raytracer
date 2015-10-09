@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include "PixelBuffer.h"
+/// This is a very simple TGA writing class, it takes a PixelBuffer and writes its contents to a file.
 class TgaWriter {
 public:
 	TgaWriter() {}

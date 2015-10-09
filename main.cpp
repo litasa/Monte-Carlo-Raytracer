@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 
 	Application application(w, h);
 
-	std::cin.ignore();
+	std::cin.ignore(); //Too see output in console
 
 	return STATUS_OK;
 }

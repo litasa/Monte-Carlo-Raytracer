@@ -21,6 +21,8 @@ public:
 		_ready = true;
 	}
 
+	friend class Camera;
+
 private:
 	bool _ready = false;
 	const unsigned int _width;

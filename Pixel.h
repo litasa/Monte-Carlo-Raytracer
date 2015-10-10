@@ -8,14 +8,8 @@ class Pixel {
 public:
 	Pixel() = default;
 	bool pixel_ready() { return true; }
-	
-	//For testing purposes this method returns a gaussian random distribution color
-	glm::vec3 get_rgb_color_value() const {
-		return glm::vec3(glm::clamp(glm::gaussRand(0.5, 0.25), 0.0, 1.0),
-			glm::clamp(glm::gaussRand(0.5, 0.25), 0.0, 1.0),
-			glm::clamp(glm::gaussRand(0.5, 0.25), 0.0, 1.0));
-	}
-
+	glm::vec3 get_rgb_color_value() const { return _rgb_color; }
+	void set_rgb_color_value(const glm::vec3 &rgb_color) { _rgb_color = rgb_color; }
 private:
-	Ray ray;
+	glm::vec3 _rgb_color;
 };

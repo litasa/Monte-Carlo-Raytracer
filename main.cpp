@@ -2,11 +2,6 @@
 #include <iostream>
 #include <cstdlib>
 #include "Application.h"
-
-#include "Ray.h"
-#include "Sphere.h"
-#include "Plane.h"
-
 #define STATUS_OK 0
 #define STATUS_ERROR -1
 #define PROG_ARGS 3

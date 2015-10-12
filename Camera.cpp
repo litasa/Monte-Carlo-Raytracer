@@ -2,7 +2,7 @@
 #include "glm\gtc\random.hpp"
 #include "Renderer.h"
 
-Camera::Camera(glm::vec3 origin, glm::vec3 direction, unsigned int rays_per_pixel) : _origin(origin), _direction(direction) {
+Camera::Camera(glm::vec3 origin, glm::vec3 direction, glm::vec3 right, glm::vec3 up, unsigned int rays_per_pixel) : _origin(origin), _direction(direction), _right(right), _up(up) {
 	//Rays per pixel is always a power-of-two to enable supersampling
 	double base_two = glm::log2(static_cast<double>(_rays_per_pixel));
 	double nearest_pot = glm::pow(2.0, glm::ceil(base_two));
@@ -23,7 +23,7 @@ void Camera::render_scene(const Scene &scene, PixelBuffer &buffer) {
 			glm::vec3 final_color(0);
 			for (unsigned int r = 0; r < _rays_per_pixel; ++r) {
 				Ray ray;
-				set_ray_direction(ray, x, y);
+				set_ray_direction(ray, buffer, x, y);
 				final_color += renderer.compute_light(scene, ray);
 			}
 			final_color /= _rays_per_pixel;
@@ -33,6 +33,6 @@ void Camera::render_scene(const Scene &scene, PixelBuffer &buffer) {
 	}
 }
 
-void Camera::set_ray_direction(Ray &ray, int x, int y) {
+void Camera::set_ray_direction(Ray &ray, PixelBuffer &buffer, int x, int y) {
 	ray._direction = glm::normalize(glm::vec3(x, y, near_plane_distance));
 }

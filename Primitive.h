@@ -7,9 +7,18 @@ class Primitive
 public:
 	Primitive() = default;
 	Primitive(glm::vec3 position, std::shared_ptr<Material> material) : _position(position), _material(material) {};
+	
+	enum PrimitiveType {
+		Sphere,
+		Plane,
+		None,
+	};
 
-	virtual glm::vec3 intersection(std::shared_ptr<Ray> ray) = 0;
+	virtual glm::vec3 intersection(const Ray &ray) = 0;
 	virtual glm::vec3 get_normal_at(const glm::vec3 &position) = 0;
+	virtual PrimitiveType get_type() = 0;
+
+	const glm::vec3 _no_intersection = glm::vec3(-100);
 
 	glm::vec3 _position;
 	std::shared_ptr<Material> _material;

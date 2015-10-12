@@ -21,6 +21,7 @@ public:
 		_ready = true;
 	}
 
+	//Camera has access to PixelBuffer's private members
 	friend class Camera;
 
 private:

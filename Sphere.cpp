@@ -1,21 +1,11 @@
 #include "Sphere.h"
 #include <utility>
 
-
-Sphere::Sphere()
+glm::vec3 Sphere::intersection(std::shared_ptr<Ray> ray)
 {
-}
+	glm::vec3 L = _position - ray->_origin;
 
-
-Sphere::~Sphere()
-{
-}
-
-glm::vec3 Sphere::Intersection(Ray* ray)
-{
-	glm::vec3 L = position - ray->origin;
-
-	float tca = glm::dot(L, ray->direction);
+	float tca = glm::dot(L, ray->_direction);
 
 	if (tca < 0) //intersections "behind" origin not interesting
 	{
@@ -24,12 +14,12 @@ glm::vec3 Sphere::Intersection(Ray* ray)
 
 	float d2 = glm::dot(L, L) - tca * tca;
 
-	if (d2 > radius*radius)
+	if (d2 > _radius*_radius)
 	{
 		return glm::vec3(-100);
 	}
 
-	float thc = sqrt(radius*radius - d2);
+	float thc = sqrt(_radius*_radius - d2);
 
 	float t0 = tca - thc;
 	float t1 = tca + thc;
@@ -49,15 +39,15 @@ glm::vec3 Sphere::Intersection(Ray* ray)
 	//find closest point to the ray origin
 	if (t0 < t1)
 	{
-		return (ray->origin + t0*ray->direction);
+		return (ray->_origin + t0*ray->_direction);
 	}
 	else
 	{
-		return (ray->origin + t1*ray->direction);
+		return (ray->_origin + t1*ray->_direction);
 	}
 }
 
-glm::vec3 Sphere::GetNormalAt(glm::vec3 hitPoint)
+glm::vec3 Sphere::get_normal_at(const glm::vec3 &hit_point)
 {
-	return (hitPoint - position) / glm::normalize(hitPoint - position);
+	return (hit_point - _position) / glm::normalize(hit_point - _position);
 }

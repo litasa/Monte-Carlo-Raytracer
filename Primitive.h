@@ -1,21 +1,16 @@
 #pragma once
-#ifndef PRIMITIVE_H
-#define PRIMITIVE_H
-
+#include <memory>
 #include "Ray.h"
 #include "Material.h"
 class Primitive
 {
 public:
-	Primitive();
-	Primitive(glm::vec3 pos, Material* mat) : position(pos), material(mat) {};
-	~Primitive();
+	Primitive() = default;
+	Primitive(glm::vec3 position, std::shared_ptr<Material> material) : _position(position), _material(material) {};
 
-	glm::vec3 Intersection(Ray* ray);
-	glm::vec3 GetNormalAt(glm::vec3 pos);
+	virtual glm::vec3 intersection(std::shared_ptr<Ray> ray) = 0;
+	virtual glm::vec3 get_normal_at(const glm::vec3 &position) = 0;
 
-	glm::vec3 position;
-	Material* material;
+	glm::vec3 _position;
+	std::shared_ptr<Material> _material;
 };
-
-#endif

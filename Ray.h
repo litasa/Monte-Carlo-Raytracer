@@ -1,37 +1,24 @@
 #pragma once
-#ifndef RAY_H
-#define RAY_H
-
+#include <memory>
 #include "glm\glm.hpp"
-
-//originID is the spawning triangle
-//refraktiveIndex is for when we need to go into materia
-class Ray
+class Ray : std::enable_shared_from_this<Ray>
 {
 public:
-	Ray() {};
-	Ray(glm::vec3 orig, glm::vec3 direc) : origin(orig), direction(direc)
+	Ray() = default;
+	Ray(glm::vec3 origin, glm::vec3 direction) : _origin(origin), _direction(direction)
 	{
-		inv_direction.x = 1 / direc.x;
-		inv_direction.y = 1 / direc.y;
-		inv_direction.z = 1 / direc.z;
-		parent = nullptr;
-		reflected_child = nullptr;
-		refracted_child = nullptr;
+		_inv_direction.x = 1.0f / _direction.x;
+		_inv_direction.y = 1.0f / _direction.y;
+		_inv_direction.z = 1.0f / _direction.z;
 	}
 
-	~Ray() { /*delete parent; delete reflected_child; delete reflected_child;*/ };
+	glm::vec3 _origin;
+	glm::vec3 _direction;
+	glm::vec3 _inv_direction;
 
-	glm::vec3 origin;
-	glm::vec3 direction;
-	glm::vec3 inv_direction;
+	std::shared_ptr<Ray> _parent;
+	std::shared_ptr<Ray> _refracted_child;
+	std::shared_ptr<Ray> _reflected_child;
 
-	Ray* parent;
-	Ray* refracted_child;
-	Ray* reflected_child;
-
-	float importance;
-
+	float _importance;
 };
-
-#endif

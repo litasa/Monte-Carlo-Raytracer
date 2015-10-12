@@ -34,5 +34,5 @@ void Camera::render_scene(const Scene &scene, PixelBuffer &buffer) {
 }
 
 void Camera::set_ray_direction(Ray &ray, int x, int y) {
-	ray.direction = glm::normalize(glm::vec3(x, y, near_plane_distance));
+	ray._direction = glm::normalize(glm::vec3(x, y, near_plane_distance));
 }

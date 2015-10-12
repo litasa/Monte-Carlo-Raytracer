@@ -8,7 +8,7 @@ public:
 	TgaWriter() {}
 	TgaWriter(const PixelBuffer &px_buffer) : _px_buffer(_px_buffer)  {}
 	void set_buffer(const PixelBuffer &px_buffer) { _px_buffer = px_buffer; }
-	void write(std::string fn);
+	void write(std::string file_name);
 private:
 	PixelBuffer _px_buffer;
 };

@@ -7,6 +7,6 @@ class Renderer {
 public:
 	Renderer() = default;
 	glm::vec3 compute_light(const Scene &scene, const Ray &ray) {
-		return glm::vec3(ray.direction); 
+		return glm::vec3(ray._direction); 
 	}
 };

@@ -7,7 +7,7 @@
 #include "TgaWriter.h"
 #include "glm\glm.hpp"
 
-void TgaWriter::write(std::string fn) {
+void TgaWriter::write(std::string file_name) {
 	
 	std::vector<char> header = std::vector<char>(18, 0);
 	header[2] = 2; //Uncompressed, true color
@@ -28,18 +28,8 @@ void TgaWriter::write(std::string fn) {
 		}
 	}
 
-	/*
-	FILE *file;
-	file = fopen(fn.c_str(), "w+b");
-	char *byte_arr = &bytes[0];
-	char *header_arr = &header[0];
-	fwrite(header_arr, sizeof(char), header.size(), file);
-	fwrite(byte_arr, sizeof(char), bytes.size(), file);
-	fclose(file);
-	*/
-	
 	//Write the header and the content
-	std::ofstream file(fn, std::ios::binary);
+	std::ofstream file(file_name, std::ios::binary);
 	if (file.is_open()) {
 		std::ostream_iterator<char> out(file);
 		std::copy(header.cbegin(), header.cend(), out);

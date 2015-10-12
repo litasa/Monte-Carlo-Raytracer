@@ -1,33 +1,24 @@
 #include "Plane.h"
 #include <iostream>
 
-Plane::Plane()
+glm::vec3 Plane::intersection(std::shared_ptr<Ray> ray)
 {
-}
-
-
-Plane::~Plane()
-{
-}
-
-glm::vec3 Plane::Intersection(Ray* ray)
-{
-	float D = (normal.x*ray->origin.x + normal.y*ray->origin.y + normal.z*ray->origin.z + d) / glm::length(normal);
-	if (D > 0 && glm::dot(ray->direction,normal) > 0)
+	float D = (_normal.x*ray->_origin.x + _normal.y*ray->_origin.y + _normal.z*ray->_origin.z + _d) / glm::length(_normal);
+	if (D > 0 && glm::dot(ray->_direction,_normal) > 0)
 	{
 		return glm::vec3(-100);
 	}
-	else if (D < 0 && glm::dot(ray->direction, normal) < 0)
+	else if (D < 0 && glm::dot(ray->_direction, _normal) < 0)
 	{
 		return glm::vec3(-100);
 	}
-	float t = -(glm::dot(ray->origin, normal) + d) / (glm::dot(ray->direction, normal));
+	float t = -(glm::dot(ray->_origin, _normal) + _d) / (glm::dot(ray->_direction, _normal));
 	std::cout << "t: " << t << std::endl;
-	glm::vec3 hitP = ray->origin + t*ray->direction;
-	return hitP;
+	glm::vec3 hit_point = ray->_origin + t*ray->_direction;
+	return hit_point;
 }
 
-glm::vec3 Plane::GetNormalAt(glm::vec3 hitPos)
+glm::vec3 Plane::get_normal_at(const glm::vec3 &hit_point)
 {
-	return normal;
+	return _normal;
 }

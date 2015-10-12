@@ -1,7 +1,12 @@
-#include <string>
+ï»¿#include <string>
 #include <iostream>
 #include <cstdlib>
 #include "Application.h"
+
+#include "Ray.h"
+#include "Sphere.h"
+#include "Plane.h"
+
 #define STATUS_OK 0
 #define STATUS_ERROR -1
 #define PROG_ARGS 3
@@ -15,7 +20,7 @@
 /// The program takes as arguments the width and height of the screen.
 /// In the future it will maybe be able to parse a scene description.
 /// Happy raytracing!
-/// Authors: Andreas Christoffer Larsson, Jakob Törmä Ruhl
+/// Authors: Andreas Christoffer Larsson, Jakob TÃ¶rmÃ¤ Ruhl
 int main(int argc, char *argv[]) {
 
 	int w, h;

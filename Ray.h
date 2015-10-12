@@ -9,25 +9,28 @@
 class Ray
 {
 public:
-	Ray()
+	Ray() {};
+	Ray(glm::vec3 orig, glm::vec3 direc) : origin(orig), direction(direc)
 	{
-		refraktiveIndex = 1.0; //air
-		originID = -1;
-	};
-	Ray(glm::vec3 orig, glm::vec3 direc, float refID = 1.0, int oriID = -1)
-	{
-		origin = orig;
-		direction = direc;
-		refraktiveIndex = refID;
-		originID = oriID;
+		inv_direction.x = 1 / direc.x;
+		inv_direction.y = 1 / direc.y;
+		inv_direction.z = 1 / direc.z;
+		parent = nullptr;
+		reflected_child = nullptr;
+		refracted_child = nullptr;
 	}
-	//~Ray(){};
+
+	~Ray() { delete parent; delete reflected_child; delete reflected_child; };
 
 	glm::vec3 origin;
 	glm::vec3 direction;
+	glm::vec3 inv_direction;
 
-	int originID;
-	float refraktiveIndex;
+	Ray* parent;
+	Ray* refracted_child;
+	Ray* reflected_child;
+
+	float importance;
 
 };
 

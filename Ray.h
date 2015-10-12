@@ -20,7 +20,7 @@ public:
 		refracted_child = nullptr;
 	}
 
-	~Ray() { delete parent; delete reflected_child; delete reflected_child; };
+	~Ray() { /*delete parent; delete reflected_child; delete reflected_child;*/ };
 
 	glm::vec3 origin;
 	glm::vec3 direction;

@@ -17,11 +17,11 @@ void Camera::render_scene(const Scene &scene, PixelBuffer &buffer) {
 
 	Renderer renderer;
 	unsigned int y = 0, x = 0;
-	for (int y = 0; y < buffer.get_height(); ++y) {
-		for (int x = 0 ; x < buffer.get_width(); ++x) {
+	for (unsigned int y = 0; y < buffer.get_height(); ++y) {
+		for (unsigned int x = 0 ; x < buffer.get_width(); ++x) {
 			//Compute color for each ray and take the average
 			glm::vec3 final_color(0);
-			for (int rpp = 0; rpp < _rays_per_pixel; ++rpp) {
+			for (unsigned int r = 0; r < _rays_per_pixel; ++r) {
 				Ray ray;
 				set_ray_direction(ray, x, y);
 				final_color += renderer.compute_light(scene, ray);

@@ -13,7 +13,7 @@ public:
 	bool pixel_buffer_ready() { return _ready; }
 	unsigned int get_width() { return _width; }
 	unsigned int get_height() { return _height; }
-	auto get_pixels() -> const std::vector<std::vector<Pixel>> & const { return _pixels; }
+	const std::vector<std::vector<Pixel>> &get_pixels() const { return _pixels; }
 	
 	//Initialize all pixels in buffer to the empty pixel
 	void init_pixel_buffer() {

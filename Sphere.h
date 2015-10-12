@@ -8,7 +8,8 @@ public:
 	Sphere(glm::vec3 position, Material* mat, float radi) : Primitive(position, mat), radius(radi) {};
 	~Sphere();
 
-	bool Intersection(Ray* ray);
+	glm::vec3 Intersection(Ray* ray);
+	glm::vec3 GetNormalAt(glm::vec3 hitPoint);
 
 private:
 

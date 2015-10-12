@@ -11,7 +11,8 @@ public:
 	Primitive(glm::vec3 pos, Material* mat) : position(pos), material(mat) {};
 	~Primitive();
 
-	virtual bool Intersection(Ray* ray) = 0;
+	virtual glm::vec3 Intersection(Ray* ray) = 0;
+	virtual glm::vec3 GetNormalAt(glm::vec3 pos) = 0;
 
 	glm::vec3 position;
 	Material* material;

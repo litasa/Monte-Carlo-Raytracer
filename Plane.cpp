@@ -1,5 +1,5 @@
 #include "Plane.h"
-
+#include <iostream>
 
 Plane::Plane()
 {
@@ -10,15 +10,24 @@ Plane::~Plane()
 {
 }
 
-bool Plane::Intersection(Ray* ray)
+glm::vec3 Plane::Intersection(Ray* ray)
 {
-	float denom = glm::dot(normal, ray->direction);
-
-	if (denom > 1e-6) //if denom is small then ray and plane is parallell
+	float D = (normal.x*ray->origin.x + normal.y*ray->origin.y + normal.z*ray->origin.z + d) / glm::length(normal);
+	if (D > 0 && glm::dot(ray->direction,normal) > 0)
 	{
-		glm::vec3 posOrg = position - ray->origin;
-		float t = glm::dot(posOrg, normal);
-		return (t >= 0);
+		return glm::vec3(-100);
 	}
-	return false;
+	else if (D < 0 && glm::dot(ray->direction, normal) < 0)
+	{
+		return glm::vec3(-100);
+	}
+	float t = -(glm::dot(ray->origin, normal) + d) / (glm::dot(ray->direction, normal));
+	std::cout << "t: " << t << std::endl;
+	glm::vec3 hitP = ray->origin + t*ray->direction;
+	return hitP;
+}
+
+glm::vec3 Plane::GetNormalAt(glm::vec3 hitPos)
+{
+	return normal;
 }

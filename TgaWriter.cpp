@@ -1,4 +1,7 @@
 #include <iostream>
+#include <iterator>
+#include <cstdio>
+#include <chrono>
 #include <algorithm>
 #include <functional>
 #include "TgaWriter.h"
@@ -24,13 +27,23 @@ void TgaWriter::write(std::string fn) {
 			bytes.push_back((char)(255.0f * color.r) & 0xFF);
 		}
 	}
+
+	/*
+	FILE *file;
+	file = fopen(fn.c_str(), "w+b");
+	char *byte_arr = &bytes[0];
+	char *header_arr = &header[0];
+	fwrite(header_arr, sizeof(char), header.size(), file);
+	fwrite(byte_arr, sizeof(char), bytes.size(), file);
+	fclose(file);
+	*/
 	
 	//Write the header and the content
 	std::ofstream file(fn, std::ios::binary);
 	if (file.is_open()) {
-		auto write_char_fun = [&file](char c) { file << c; };
-		std::for_each(header.cbegin(), header.cend(), write_char_fun);
-		std::for_each(bytes.cbegin(), bytes.cend(), write_char_fun);
+		std::ostream_iterator<char> out(file);
+		std::copy(header.cbegin(), header.cend(), out);
+		std::copy(bytes.cbegin(), bytes.cend(), out);
 	}
 }
 

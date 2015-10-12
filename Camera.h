@@ -3,7 +3,6 @@
 #include "glm\glm.hpp"
 #include "PixelBuffer.h"
 #include "Scene.h"
-#include "RayCollection.h"
 ///A camera is our eye that picks up light that's emitted from the scene.
 class Camera {
 public:
@@ -15,6 +14,7 @@ public:
 	friend class PixelBuffer; //The camera has direct access to pixels in the pixel buffer
 private:
 	glm::vec3 _origin, _direction;
+	float near_plane_distance = 0.01f;
 	unsigned int _rays_per_pixel;
-	std::vector<std::vector<RayCollection>> _rays;
+	void set_ray_direction(Ray &ray, int x, int y);
 };

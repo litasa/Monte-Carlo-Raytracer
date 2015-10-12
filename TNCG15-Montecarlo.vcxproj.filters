@@ -45,7 +45,7 @@
     <ClInclude Include="TempLightSource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RayCollection.h">
+    <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,9 +6,9 @@
 class Renderer {
 public:
 	Renderer() = default;
-	glm::vec3 compute_light(const Scene &scene, const Ray &ray) {
+	glm::vec3 compute_light(const Scene &scene, const Ray &ray, const glm::vec3 camera_pos) {
 
-		float nearest_squared_dist = std::numeric_limits<float>().max();
+		float nearest_to_camera = std::numeric_limits<float>().max();
 		glm::vec3 nearest_hit_point = Primitive::_no_intersection;
 		std::shared_ptr<Primitive> nearest_primitive;
 
@@ -16,9 +16,9 @@ public:
 			glm::vec3 hit_point = (*it)->intersection(ray);
 			if (hit_point != Primitive::_no_intersection) {
 				//If squared distance to hit point is smaller than before
-				float squared_distance = glm::dot(hit_point, hit_point);
-				if (squared_distance < nearest_squared_dist) {
-					nearest_squared_dist = squared_distance;
+				float distance_to_camera = glm::length(hit_point - camera_pos);
+				if (distance_to_camera < nearest_to_camera) {
+					nearest_to_camera = distance_to_camera;
 					nearest_hit_point = hit_point;
 					nearest_primitive = (*it);
 				}

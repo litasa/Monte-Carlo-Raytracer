@@ -5,7 +5,7 @@ class Plane : public Primitive
 public:
 	Plane() = default;
 	Plane(glm::vec3 position, std::shared_ptr<Material> material, glm::vec3 normal,
-		float size_x = 50.0f, float size_y = 50.0f, float size_z = 50.0f)
+		float size_x = 15.01f, float size_y = 15.01f, float size_z = 15.01f)
 		: Primitive(position, material), _normal(normal) , _size_x(size_x), _size_y(size_y), _size_z(size_z)
 	{
 		_d = -normal.x*position.x - normal.y*position.y - normal.z*position.z;

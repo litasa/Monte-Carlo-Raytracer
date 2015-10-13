@@ -45,7 +45,7 @@ void Camera::render_scene(const Scene &scene, PixelBuffer &buffer) {
 				//TODO: Set different coordinates for each ray per pixel and give random offset within that subpixel
 				set_ray_direction(ray, (float)x, (float)y);
 
-				final_color += renderer.compute_light(scene, ray);
+				final_color += renderer.compute_light(scene, ray, _origin);
 			}
 			final_color /= _rays_per_pixel;
 			//Set to pixel buffer

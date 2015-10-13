@@ -21,7 +21,7 @@ public:
 
 		//Setup camera
 		std::cout << "Setting up camera...";
-		_camera = Camera(glm::vec3(0, 0, -50), glm::vec3(0,0,1), glm::vec3(0,1,0), 45.0f, 5.0f, 1);
+		_camera = Camera(glm::vec3(0, 0, -55), glm::vec3(0,0,1), glm::vec3(0,1,0), 45.0f, 5.0f, 1);
 		std::cout << "Done" << std::endl;
 
 		//Render scene

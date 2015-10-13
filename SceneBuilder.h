@@ -14,9 +14,9 @@ public:
 		//scene.add_light_source(std::make_shared<Plane>()); //Area light source
 
 		//Add surfaces
-		scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 0, 50), std::make_shared<DiffuseMaterial>(glm::vec3(1.0, 0.0, 1.0)), 5.0f)); //Implicit surface
-		//scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 10, 0), nullptr, 1.0f)); //Implicit surface
-		//scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 10, 0), nullptr, 1.0f)); //Implicit surface
+		scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 0, 100), std::make_shared<DiffuseMaterial>(glm::vec3(1.0, 0.0, 1.0)), 5.0f)); //Implicit surface
+		//scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 10, 40), std::make_shared<DiffuseMaterial>(glm::vec3(1.0, 1.0, 1.0)), 1.0f)); //Implicit surface
+		//scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, -5, 25), std::make_shared<DiffuseMaterial>(glm::vec3(1.0, 0.0, 1.0)), 1.0f)); //Implicit surface
 
 		//Add walls
 		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0, 50, 0), std::make_shared<DiffuseMaterial>(glm::vec3(1.0, 1.0, 0.0)), glm::vec3(0, -1, 0))); //Ceiling plane

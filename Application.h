@@ -21,12 +21,12 @@ public:
 
 		//Setup camera
 		std::cout << "Setting up camera...";
-		_camera = Camera(glm::vec3(0, 0, -50), glm::vec3(0,0,1), glm::vec3(0,1,0), 45.0f, 5.0f, 1);
+		Camera camera(glm::vec3(0, 0, -50), glm::vec3(0,0,1), glm::vec3(0,1,0), 45.0f, 5.0f, 4);
 		std::cout << "Done" << std::endl;
 
 		//Render scene
 		std::cout << "Rendering scene...";
-		_camera.render_scene(_scene, _buffer);
+		camera.render_scene(_scene, _buffer);
 		std::cout << "Done" << std::endl;
 
 		//Set the resulting buffer to the writer
@@ -51,6 +51,5 @@ private:
 	const unsigned int _screen_height;
 	TgaWriter _writer;
 	PixelBuffer _buffer;
-	Camera _camera;
 	Scene _scene;
 };

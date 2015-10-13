@@ -7,10 +7,10 @@
 #define PROG_ARGS 3
 #define NO_PROG_ARGS 1
 #ifndef DEFAULT_WIDTH
-#define DEFAULT_WIDTH 256
+#define DEFAULT_WIDTH 1024
 #endif
 #ifndef DEFAULT_HEIGHT
-#define DEFAULT_HEIGHT 256
+#define DEFAULT_HEIGHT 768
 #endif
 /// The program takes as arguments the width and height of the screen.
 /// In the future it will maybe be able to parse a scene description.

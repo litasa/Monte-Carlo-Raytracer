@@ -17,15 +17,10 @@ glm::vec3 Plane::intersection(const Ray &ray)
 	float hit_x = glm::abs(hit_point.x - _position.x);
 	float hit_y = glm::abs(hit_point.y - _position.y);
 	float hit_z = glm::abs(hit_point.z - _position.z);
-	if (hit_x <= _size_x)
+
+	if (hit_x <= _size_x && hit_y <= _size_y && hit_z <= _size_z)
 	{
-		if (hit_y <= _size_y)
-		{
-			if (hit_z <= _size_z)
-			{
-				return hit_point;
-			}
-		}
+		return hit_point;
 	}
 	return _no_intersection;
 }

@@ -7,8 +7,10 @@ public:
 	virtual glm::vec3 get_color() {
 		return _color;
 	}
+	float _refractive;
+	float _reflective;
 protected:
-	Material() = default;	
+	Material() = default;
 	glm::vec3 _color;
 };
 

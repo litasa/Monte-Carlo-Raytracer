@@ -27,8 +27,19 @@ public:
 
 		//If we have an intersection, check what type...
 		if (nearest_primitive != nullptr) {
-			float dot = glm::dot(glm::normalize(nearest_primitive->get_normal_at(nearest_hit_point)), glm::normalize(-ray._direction));
-			return nearest_primitive->_material->get_color() * glm::max(0.0f, dot);
+			if (nearest_primitive->_material->_reflective >= 1.0f)
+			{
+				//TODO: Pure reflective materia (SHINY)
+			}
+			else if (nearest_primitive->_material->_refractive >= 1.0f)
+			{
+				//TODO: Pure refractive materia (I CAN SEE YOUR HOME FROM HERE)
+			}
+			else //Handle it as a diffuse
+			{
+				float dot = glm::dot(glm::normalize(nearest_primitive->get_normal_at(nearest_hit_point)), glm::normalize(-ray._direction));
+				return nearest_primitive->_material->get_color() * glm::max(0.0f, dot); //output the color
+			}
 		}
 
 		return glm::vec3(0);

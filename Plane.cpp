@@ -14,14 +14,14 @@ glm::vec3 Plane::intersection(const Ray &ray)
 	}
 	float t = -(glm::dot(ray._origin, _normal) + _d) / (glm::dot(ray._direction, _normal));
 	glm::vec3 hit_point = ray._origin + t*ray._direction;
-	float hit_x = hit_point.x - _position.x;
-	float hit_y = hit_point.y - _position.y;
-	float hit_z = hit_point.z - _position.z;
-	if (hit_x <= _size_x && hit_x >= -_size_x)
+	float hit_x = glm::abs(hit_point.x - _position.x);
+	float hit_y = glm::abs(hit_point.y - _position.y);
+	float hit_z = glm::abs(hit_point.z - _position.z);
+	if (hit_x <= _size_x)
 	{
-		if (hit_y <= _size_y && hit_y >= -_size_y)
+		if (hit_y <= _size_y)
 		{
-			if (hit_z <= _size_z && hit_z >= -_size_z)
+			if (hit_z <= _size_z)
 			{
 				return hit_point;
 			}

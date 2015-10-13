@@ -37,8 +37,8 @@ public:
 			}
 			else //Handle it as a diffuse
 			{
-				float dot = glm::dot(glm::normalize(nearest_primitive->get_normal_at(nearest_hit_point)), glm::normalize(-ray._direction));
-				return nearest_primitive->_material->get_color() * glm::max(0.0f, dot); //output the color
+				//float dot = glm::dot(glm::normalize(nearest_primitive->get_normal_at(nearest_hit_point)), glm::normalize(-ray._direction));
+				return nearest_primitive->_material->get_color();/*  *glm::max(0.0f, dot); */ //output the color
 			}
 		}
 

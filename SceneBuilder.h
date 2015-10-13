@@ -10,7 +10,7 @@ class SceneBuilder {
 public:
 	static void build_cornell_box(Scene &scene) {
 		//Add light sources
-		//scene.add_primitive(std::make_shared<Plane>(glm::vec3(0.0f, 49.99f, 50), std::make_shared<DiffuseMaterial>(glm::vec3(1.0, 1.0, 1.0)), glm::vec3(0, -1, -1), 20.0f, 20.0f, 20.0f)); //Area light source
+		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0.0f, 14.99f, 0), std::make_shared<DiffuseMaterial>(glm::vec3(1.0, 1.0, 1.0)), glm::vec3(0, -1, 0), 5.0f, 5.0f, 5.0f)); //Area light source
 		//scene.add_light_source(std::make_shared<Plane>()); //Area light source
 
 		//Add surfaces

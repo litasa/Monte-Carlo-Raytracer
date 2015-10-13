@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DiffuseMaterial.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Pixel.h" />
     <ClInclude Include="PixelBuffer.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="TgaWriter.cpp" />
   </ItemGroup>

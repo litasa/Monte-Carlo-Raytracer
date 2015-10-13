@@ -49,5 +49,5 @@ glm::vec3 Sphere::intersection(const Ray &ray)
 
 glm::vec3 Sphere::get_normal_at(const glm::vec3 &hit_point)
 {
-	return (hit_point - _position) / glm::normalize(hit_point - _position);
+	return glm::normalize(hit_point - _position);
 }

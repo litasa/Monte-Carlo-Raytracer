@@ -16,7 +16,13 @@ public:
 	friend class PixelBuffer; //The camera has direct access to pixels in the pixel buffer
 private:
 	glm::vec3 _origin, _direction, _right, _up;
-	float near_plane_distance = 0.01f;
+	float _near_plane_distance = 1.0f;
+	float _width;
+	float _height;
+	float _aspect_ratio;
+	float _half_width;
+	float _half_height;
 	unsigned int _rays_per_pixel;
-	void set_ray_direction(Ray &ray, PixelBuffer &buffer, int x, int y);
+	void set_ray_direction(Ray &ray, float x, float y);
+	glm::vec2 normalize_coordinate(const glm::vec2 &coordinate);
 };

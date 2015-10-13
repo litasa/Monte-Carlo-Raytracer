@@ -11,19 +11,30 @@ Camera::Camera(glm::vec3 origin, glm::vec3 direction, glm::vec3 right, glm::vec3
 	if (_rays_per_pixel == 0) {
 		_rays_per_pixel = 1;
 	}
+
+//	_direction = glm::cross(_right, _up);
 };
 
 void Camera::render_scene(const Scene &scene, PixelBuffer &buffer) {
 
+	_half_width = (float)buffer.get_width() * 0.5f;
+	_half_height = (float)buffer.get_height() * 0.5f;
+	_width = (float)buffer.get_width();
+	_height = (float)buffer.get_height();
+	_aspect_ratio = _width / _height;
+
 	Renderer renderer;
-	unsigned int y = 0, x = 0;
 	for (unsigned int y = 0; y < buffer.get_height(); ++y) {
 		for (unsigned int x = 0 ; x < buffer.get_width(); ++x) {
 			//Compute color for each ray and take the average
+			Ray ray;
 			glm::vec3 final_color(0);
 			for (unsigned int r = 0; r < _rays_per_pixel; ++r) {
-				Ray ray;
-				set_ray_direction(ray, buffer, x, y);
+				//Convert our raster coordinates to NDC
+				//TODO: Set different coordinates for each ray per pixel and give random offset within that subpixel
+				glm::vec2 raster_coordinate(x, y);
+				glm::vec2 normalized_device_coordinate(normalize_coordinate(raster_coordinate));
+				set_ray_direction(ray, normalized_device_coordinate.x, normalized_device_coordinate.y);
 				final_color += renderer.compute_light(scene, ray);
 			}
 			final_color /= _rays_per_pixel;
@@ -33,6 +44,14 @@ void Camera::render_scene(const Scene &scene, PixelBuffer &buffer) {
 	}
 }
 
-void Camera::set_ray_direction(Ray &ray, PixelBuffer &buffer, int x, int y) {
-	ray._direction = glm::normalize(glm::vec3(x, y, near_plane_distance));
+glm::vec2 Camera::normalize_coordinate(const glm::vec2 &coordinate) {
+	glm::vec2 normalized_device_coordinate; 
+	normalized_device_coordinate.x = _aspect_ratio * (-_half_width + coordinate.x) / _width;
+	normalized_device_coordinate.y = (-_half_height + coordinate.y) / _height;
+	return normalized_device_coordinate;
+}
+
+void Camera::set_ray_direction(Ray &ray, float x, float y) {
+	ray._origin = glm::vec3(_origin);
+	ray._direction = glm::normalize(glm::vec3(x, y, _near_plane_distance));
 }

@@ -8,8 +8,6 @@
 class PixelBuffer {
 public:
 	PixelBuffer(unsigned int width = DEFAULT_PXBUF_WIDTH, unsigned int height = DEFAULT_PXBUF_HEIGHT) : _width(width), _height(height) { }
-	PixelBuffer(const PixelBuffer &pixel_buffer) : _width(pixel_buffer._width), _height(pixel_buffer._height), _pixels(pixel_buffer._pixels) { }
-	PixelBuffer &operator=(const PixelBuffer &pixel_buffer) { _pixels = pixel_buffer._pixels;  return *this; }
 	bool pixel_buffer_ready() { return _ready; }
 	unsigned int get_width() { return _width; }
 	unsigned int get_height() { return _height; }
@@ -26,7 +24,7 @@ public:
 
 private:
 	bool _ready = false;
-	const unsigned int _width;
-	const unsigned int _height;
+	unsigned int _width;
+	unsigned int _height;
 	std::vector<std::vector<Pixel>> _pixels;
 };

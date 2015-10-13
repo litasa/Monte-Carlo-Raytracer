@@ -4,7 +4,15 @@ class Plane : public Primitive
 {
 public:
 	Plane() = default;
-	Plane(glm::vec3 position, std::shared_ptr<Material> material, glm::vec3 normal) : Primitive(position, material), _normal(normal) 
+	Plane(glm::vec3 position, std::shared_ptr<Material> material, glm::vec3 normal,
+		float size_x = 300.0f, float size_y = 300.0f, float size_z = 300.0f)
+		: Primitive(position, material), _normal(normal) , _size_x(size_x), _size_y(size_y), _size_z(size_z)
+	{
+		_d = -normal.x*position.x - normal.y*position.y - normal.z*position.z;
+	};
+	Plane(glm::vec3 position, std::shared_ptr<Material> material, glm::vec3 normal,
+		float size)
+		: Primitive(position, material), _normal(normal), _size_x(size), _size_y(size), _size_z(size)
 	{
 		_d = -normal.x*position.x - normal.y*position.y - normal.z*position.z;
 	};
@@ -14,6 +22,10 @@ public:
 	PrimitiveType get_type() override { return PrimitiveType::Plane; }
 
 private:
-	float _d;
 	glm::vec3 _normal;
+	float _size_x;
+	float _size_y;
+	float _size_z;
+
+	float _d;
 };

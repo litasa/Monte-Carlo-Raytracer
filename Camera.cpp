@@ -67,7 +67,7 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 				for (unsigned int y_ray = 0; y_ray < sub_pixel_count; ++y_ray) {
 					for (unsigned int x_ray = 0; x_ray < sub_pixel_count; ++x_ray) {
 						set_jittered_ray_direction(ray, static_cast<float>(x), static_cast<float>(y), sub_pixel_step, 1.0f);
-						final_color += renderer.compute_light(scene, ray, 0);
+						final_color += renderer.compute_light(scene, ray, 0)/(float)sub_pixel_count;
 					}
 				}
 			}

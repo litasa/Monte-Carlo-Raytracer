@@ -6,7 +6,10 @@
 class Renderer {
 public:
 	Renderer() = default;
-	glm::vec3 compute_light(const Scene &scene, const Ray &ray, const glm::vec3 camera_pos) {
+	glm::vec3 compute_light(const Scene &scene, const Ray &ray, const glm::vec3 camera_pos, int depth) {
+
+		if (depth == 10 || ray._importance < 0.01f)
+			return glm::vec3(0);
 
 		float nearest_to_camera = std::numeric_limits<float>().max();
 		glm::vec3 nearest_hit_point = Primitive::_no_intersection;
@@ -37,8 +40,12 @@ public:
 			}
 			else //Handle it as a diffuse
 			{
-				//float dot = glm::dot(glm::normalize(nearest_primitive->get_normal_at(nearest_hit_point)), glm::normalize(-ray._direction));
-				return nearest_primitive->_material->get_color();/*  *glm::max(0.0f, dot); */ //output the color
+				glm::vec3 normal = glm::normalize(nearest_primitive->get_normal_at(nearest_hit_point));
+				glm::vec3 refl = 2.0f * normal * (glm::dot(-ray._direction, normal)) - (-ray._direction);
+				float dot = glm::dot(normal, refl);
+				Ray new_ray(nearest_hit_point, glm::normalize(refl));
+				new_ray._importance = 0.9f * ray._importance;
+				return nearest_primitive->_material->get_color() + 2.0f * nearest_primitive->_material->_reflective * glm::max(0.0f, dot) * compute_light(scene, new_ray, camera_pos, depth + 1);
 			}
 		}
 

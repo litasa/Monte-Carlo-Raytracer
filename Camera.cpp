@@ -53,6 +53,7 @@ void Camera::concurrent_initial_raycast(const Scene &scene, PixelBuffer &buffer)
 
 void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsigned int x_id, unsigned y_id, unsigned int tile_width, unsigned int tile_height) {
 	Ray ray;
+	ray._importance = 1.0;
 	Renderer renderer;
 	float color_ratio = 1.0f / _rays_per_pixel;
 	unsigned int sub_pixel_count = _rays_per_pixel / 2;
@@ -66,13 +67,13 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 				for (unsigned int y_ray = 0; y_ray < sub_pixel_count; ++y_ray) {
 					for (unsigned int x_ray = 0; x_ray < sub_pixel_count; ++x_ray) {
 						set_jittered_ray_direction(ray, static_cast<float>(x), static_cast<float>(y), sub_pixel_step, 1.0f);
-						final_color += renderer.compute_light(scene, ray, _origin);
+						final_color += renderer.compute_light(scene, ray, _origin, 0);
 					}
 				}
 			}
 			else {
 				set_ray_direction(ray, static_cast<float>(x), static_cast<float>(y));
-				final_color = renderer.compute_light(scene, ray, _origin);
+				final_color = renderer.compute_light(scene, ray, _origin, 0);
 			}
 		
 			//Synchronize buffer write access

@@ -9,6 +9,7 @@ public:
 	}
 	float _refractive;
 	float _reflective;
+	bool _light;
 protected:
 	Material() = default;
 	glm::vec3 _color;

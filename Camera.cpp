@@ -67,13 +67,13 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 				for (unsigned int y_ray = 0; y_ray < sub_pixel_count; ++y_ray) {
 					for (unsigned int x_ray = 0; x_ray < sub_pixel_count; ++x_ray) {
 						set_jittered_ray_direction(ray, static_cast<float>(x), static_cast<float>(y), sub_pixel_step, 1.0f);
-						final_color += renderer.compute_light(scene, ray, _origin, 0);
+						final_color += renderer.compute_light(scene, ray, 0);
 					}
 				}
 			}
 			else {
 				set_ray_direction(ray, static_cast<float>(x), static_cast<float>(y));
-				final_color = renderer.compute_light(scene, ray, _origin, 0);
+				final_color = renderer.compute_light(scene, ray, 0);
 			}
 		
 			//Synchronize buffer write access
@@ -86,12 +86,14 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 
 void Camera::set_ray_direction(Ray &ray, float x, float y) {
 	//Rays are sent from the camera origin in the direction of a pixel position (in view coordinates)
+	ray._importance = 1.0f;
 	ray._origin = glm::vec3(_origin);
 	ray._direction = glm::normalize((_near_plane_bot_left + _right * x * _pixel_width + _up * y * _pixel_height) - _origin);
 }
 
 void Camera::set_jittered_ray_direction(Ray &ray, float x, float y, float sub_pixel_size, float amount) {
 	//Rays are sent from the camera origin in the direction of a pixel position (in view coordinates)
+	ray._importance = 1.0f;
 	ray._origin = glm::vec3(_origin + glm::linearRand(0.0f, amount * sub_pixel_size) * _up + glm::linearRand(0.0f, amount * sub_pixel_size) * _right);
 	ray._direction = glm::normalize((_near_plane_bot_left + _right * x * _pixel_width + _up * y * _pixel_height) - _origin);
 }

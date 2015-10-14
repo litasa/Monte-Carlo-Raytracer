@@ -4,14 +4,16 @@
 #include "Primitive.h"
 #include "Plane.h"
 #include "Sphere.h"
+#include "LightMaterial.h"
 #include "DiffuseMaterial.h"
 /// This is just an incapsulation of the creation of a scene object.
 class SceneBuilder {
 public:
 	static void build_cornell_box(Scene &scene) {
 		//Add light sources
-		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0.0f, 14.99f, 0), std::make_shared<DiffuseMaterial>(glm::vec3(1.0, 1.0, 1.0)), glm::vec3(0, -1, 0), 5.0f, 5.0f, 5.0f)); //Area light source
-		//scene.add_light_source(std::make_shared<Plane>()); //Area light source
+		std::shared_ptr<Plane> area_light = std::make_shared<Plane>(glm::vec3(0.0f, 14.99f, 0), std::make_shared<LightMaterial>(glm::vec3(1.0, 1.0, 1.0)), glm::vec3(0, -1, 0), 5.0f, 5.0f, 5.0f);
+		scene.add_primitive(area_light); //Area light source
+		scene.add_light_source(area_light); //Area light source
 
 		//Add surfaces
 		scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 0, 0), std::make_shared<DiffuseMaterial>(glm::vec3(1.0, 0.0, 1.0)), 5.0f)); //Implicit surface

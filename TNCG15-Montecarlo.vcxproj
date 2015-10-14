@@ -145,6 +145,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DiffuseMaterial.h" />
+    <ClInclude Include="LightMaterial.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Pixel.h" />
     <ClInclude Include="PixelBuffer.h" />

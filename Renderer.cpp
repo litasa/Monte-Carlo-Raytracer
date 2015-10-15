@@ -10,20 +10,17 @@ glm::vec3 Renderer::radiance(const Ray &ray) {
 	if (intersection.object != nullptr) {
 		//Light travels to the eye
 		intersection.direction = -ray._direction;
-		return intersection.object->_material->get_emitted() + compute_radiance(intersection);
+		return intersection.object->_material->get_emitted() + compute_radiance(intersection, 0);
 	}
 	//Black if no intersection
 	return glm::vec3(0);
 }
 
-glm::vec3 Renderer::compute_radiance(const Intersection &intersection) {
+glm::vec3 Renderer::compute_radiance(const Intersection &intersection, int depth) {
 	glm::vec3 estimated_radiance;
 	estimated_radiance += compute_direct_light(intersection);
-	estimated_radiance += compute_indirect_light(intersection);
+	estimated_radiance += compute_indirect_light(intersection, depth);
 
-	if (estimated_radiance.x > 1 || estimated_radiance.y > 1 || estimated_radiance.z > 1) {
-		std::cout << "Larger than 1" << std::endl;
-	}
 	return estimated_radiance;
 }
 
@@ -35,9 +32,9 @@ glm::vec3 Renderer::compute_direct_light(const Intersection &intersection) {
 		std::shared_ptr<Primitive> light = _scene.get_light_sources().at(index);
 		glm::vec3 sample_point = light->_position; //No random sampling, yet.
 		float probability = probability_distribution(light) * probability_distribution(light, sample_point);
-		estimated_radiance += light->_material->get_emitted() * radiance_transfer(intersection, light, sample_point) / probability; //NO BRDF YET
+		estimated_radiance += light->_material->get_emitted() * intersection.object->_material->get_color() * radiance_transfer(intersection, light, sample_point) / probability; //NO BRDF YET
 	}
-	return estimated_radiance / (float)_shadow_rays; //Division of #paths, need to change for indirect illumination
+	return estimated_radiance; // (float)_shadow_rays; //Division of #paths, need to change for indirect illumination
 }
 
 float Renderer::radiance_transfer(const Intersection &intersection, const std::shared_ptr<Primitive> &object, const glm::vec3 &sample_point) {
@@ -59,10 +56,10 @@ float Renderer::probability_distribution(const std::shared_ptr<Primitive> &objec
 	return 1.0f / _scene.get_light_sources().size(); //CHECK ZERO
 }
 
-glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection) {
+glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int depth) {
 	glm::vec3 estimated_radiance(0);
-	int russian_roulette = (int)(glm::linearRand(0.0f, 1.0f) * 5.0f);
-	if (russian_roulette <= 1) {
+	//int russian_roulette = (int)glm::linearRand(0.0f, 5.0f);
+	if (depth < 2) {
 		int nr_rays = (int)glm::linearRand(1.0f, 5.0f);
 		for (int i = 0; i < nr_rays; ++i) {
 			glm::vec3 surface_normal = intersection.object->get_normal_at(intersection.point);
@@ -79,11 +76,14 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection) {
 			}
 
 			if (no_light) {
-				estimated_radiance += compute_radiance(new_intersection) * glm::dot(intersection.object->get_normal_at(intersection.point), new_dir) / glm::pi<float>(); //Should have PDF, now just pi
+				estimated_radiance += compute_radiance(new_intersection, depth + 1) * intersection.object->_material->get_color() * glm::dot(intersection.object->get_normal_at(intersection.point), new_dir) / glm::pi<float>(); //Should have PDF, now just pi
+				//if (glm::length(estimated_radiance) != 0) {
+				//	std::cout << "COLOR!!" << std::endl;
+				//}
 			}
 		}
 
-		estimated_radiance /= (float)nr_rays; //Should be #paths
+		//estimated_radiance /= (float)nr_rays; //Should be #paths
 	}
 
 	return estimated_radiance / 1.0f; //Should be absorption coeff

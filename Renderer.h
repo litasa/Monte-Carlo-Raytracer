@@ -25,8 +25,8 @@ private:
 	int _recursion_depth;
 	int _shadow_rays;
 
-	glm::vec3 compute_radiance(const Intersection &intersection);
-	glm::vec3 compute_indirect_light(const Intersection &intersection);
+	glm::vec3 compute_radiance(const Intersection &intersection, int depth);
+	glm::vec3 compute_indirect_light(const Intersection &intersection, int depth);
 	glm::vec3 compute_direct_light(const Intersection &intersection);
 	float radiance_transfer(const Intersection &intersection, const std::shared_ptr<Primitive> &object, const glm::vec3 &sample_point);
 	float probability_distribution(const std::shared_ptr<Primitive> &object, const glm::vec3 &point);

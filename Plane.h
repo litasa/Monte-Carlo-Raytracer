@@ -60,6 +60,22 @@ public:
 		}
 	};
 
+	glm::vec2 GetSizes()
+	{
+			if (_normal == glm::vec3(0, 1, 0) || _normal == glm::vec3(0, -1, 0))
+			{
+				return glm::vec2(_size_x, _size_z);
+			}
+			else if (_normal == glm::vec3(1, 0, 0) || _normal == glm::vec3(-1, 0, 0))
+			{
+				return glm::vec2(_size_y, _size_z);
+			}
+			else if (_normal == glm::vec3(0, 0, 1) || _normal == glm::vec3(0, 0, -1))
+			{
+				return glm::vec2(_size_x, _size_y);
+			}
+	}
+
 	glm::vec3 intersection(const Ray &ray) override;
 	glm::vec3 get_normal_at(const glm::vec3 &hit_point) override;
 	PrimitiveType get_type() override { return PrimitiveType::Plane; }

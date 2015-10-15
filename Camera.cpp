@@ -2,6 +2,12 @@
 #include <algorithm>
 #include "glm\gtc\random.hpp"
 #include "Renderer.h"
+#ifndef SHADOW_RAYS
+#define SHADOW_RAYS 20
+#endif
+#ifndef RECURSION_DEPTH
+#define RECURSION_DEPTH 5
+#endif
 
 Camera::Camera(glm::vec3 origin, glm::vec3 look_at, glm::vec3 world_up, float vertical_fov, float near_plane_distance, unsigned int rays_per_pixel)
 	: _origin(origin), _rays_per_pixel(rays_per_pixel), _near_plane_distance(near_plane_distance), _vertical_fov(vertical_fov) {
@@ -54,7 +60,7 @@ void Camera::concurrent_initial_raycast(const Scene &scene, PixelBuffer &buffer)
 void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsigned int x_id, unsigned y_id, unsigned int tile_width, unsigned int tile_height) {
 	Ray ray;
 	ray._importance = 1.0;
-	Renderer renderer;
+	Renderer renderer(scene, RECURSION_DEPTH, SHADOW_RAYS);
 	float color_ratio = 1.0f / _rays_per_pixel;
 	unsigned int sub_pixel_count = _rays_per_pixel / 2;
 	float sub_pixel_step = _pixel_width / sub_pixel_count;
@@ -67,13 +73,14 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 				for (unsigned int y_ray = 0; y_ray < sub_pixel_count; ++y_ray) {
 					for (unsigned int x_ray = 0; x_ray < sub_pixel_count; ++x_ray) {
 						set_jittered_ray_direction(ray, static_cast<float>(x), static_cast<float>(y), sub_pixel_step, 1.0f);
-						final_color += renderer.compute_light(scene, ray, 0)/(float)sub_pixel_count;
+						final_color += renderer.radiance(ray);
 					}
 				}
+				final_color /= (float)sub_pixel_count;
 			}
 			else {
 				set_ray_direction(ray, static_cast<float>(x), static_cast<float>(y));
-				final_color = renderer.compute_light(scene, ray, 0);
+				final_color = renderer.radiance(ray);
 			}
 		
 			//Synchronize buffer write access

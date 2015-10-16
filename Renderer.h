@@ -29,8 +29,8 @@ private:
 	glm::vec3 compute_indirect_light(const Intersection &intersection, int depth);
 	glm::vec3 compute_direct_light(const Intersection &intersection);
 	float radiance_transfer(const Intersection &intersection, const std::shared_ptr<Primitive> &object, const glm::vec3 &sample_point);
-	float probability_distribution(const std::shared_ptr<Primitive> &object, const glm::vec3 &point);
-	float probability_distribution(const std::shared_ptr<Primitive> &object);
+	glm::vec3 compute_diffuse_ray(const glm::vec3 normal);
+
 	//float radiance_transfer(const glm::vec3 &point_a, const glm::vec3 &point_b, const glm::vec3 &normal_a, const glm::vec3 &normal_b, const std::shared_ptr<Primitive> &object);
 	void find_nearest(const Ray &ray, float &nearest_distance, glm::vec3 &nearest_point, std::shared_ptr<Primitive> &nearest_primitive);
 	//The geometry term. Advanced Global Illumination page 43.

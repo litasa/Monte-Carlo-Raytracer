@@ -82,9 +82,9 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 				final_color = renderer.radiance(ray);
 			}
 		
-			final_color.r = 1.0f - glm::exp(-final_color.r * 100.0f);
-			final_color.g = 1.0f - glm::exp(-final_color.g * 100.0f);
-			final_color.b = 1.0f - glm::exp(-final_color.b * 100.0f);
+			final_color.r = 1.0f - glm::exp(-final_color.r);
+			final_color.g = 1.0f - glm::exp(-final_color.g);
+			final_color.b = 1.0f - glm::exp(-final_color.b);
 
 			//Synchronize buffer write access
 			mutex.lock();

@@ -6,4 +6,6 @@ public:
 	glm::vec3 get(const glm::vec3 &surface_normal, const glm::vec3 &in, const glm::vec3 &out) override {
 		return glm::vec3(1);
 	}
+
+	BRDFType get_type() override { return BRDFType::DUMMY; }
 };

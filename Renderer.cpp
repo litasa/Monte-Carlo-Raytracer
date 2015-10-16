@@ -18,8 +18,8 @@ glm::vec3 Renderer::radiance(const Ray &ray) {
 
 glm::vec3 Renderer::compute_radiance(const Intersection &intersection, int depth) {
 	glm::vec3 estimated_radiance;
-	estimated_radiance += 0.9f * compute_direct_light(intersection);
-	estimated_radiance += 0.1f * compute_indirect_light(intersection, depth);
+	estimated_radiance += compute_direct_light(intersection);
+	estimated_radiance += compute_indirect_light(intersection, depth);
 	return estimated_radiance;
 }
 

@@ -19,7 +19,7 @@ glm::vec3 Renderer::radiance(const Ray &ray) {
 glm::vec3 Renderer::compute_radiance(const Intersection &intersection, int depth) {
 	glm::vec3 estimated_radiance;
 	estimated_radiance += compute_direct_light(intersection);
-	estimated_radiance += compute_indirect_light(intersection, depth);
+	//estimated_radiance += compute_indirect_light(intersection, depth);
 
 	return estimated_radiance;
 }
@@ -30,11 +30,11 @@ glm::vec3 Renderer::compute_direct_light(const Intersection &intersection) {
 	for (int i = 0; i < _shadow_rays; ++i) {
 		int index = glm::linearRand(0, nr_lights - 1);
 		std::shared_ptr<Primitive> light = _scene.get_light_sources().at(index);
-		glm::vec3 sample_point = light->_position; //No random sampling, yet.
-		float probability = probability_distribution(light) * probability_distribution(light, sample_point);
-		estimated_radiance += light->_material->get_emitted() * intersection.object->_material->get_color() * radiance_transfer(intersection, light, sample_point) / probability; //NO BRDF YET
+		glm::vec3 sample_point = light->uniform_random_sample();
+		float probability = probability_distribution(light) * light->uniform_pdf();
+		estimated_radiance += light->_material->get_emitted() * radiance_transfer(intersection, light, sample_point) / probability; //NO BRDF YET
 	}
-	return estimated_radiance; // (float)_shadow_rays; //Division of #paths, need to change for indirect illumination
+	return estimated_radiance / (float)_shadow_rays; //Division of #paths, need to change for indirect illumination
 }
 
 float Renderer::radiance_transfer(const Intersection &intersection, const std::shared_ptr<Primitive> &object, const glm::vec3 &sample_point) {
@@ -47,7 +47,7 @@ float Renderer::probability_distribution(const std::shared_ptr<Primitive> &objec
 	if (object->get_type() == Primitive::PrimitiveType::Plane)
 	{
 		Plane *plane = dynamic_cast<Plane*>(object.get());
-		return 1.0f / plane->_area;
+		return 1.0f / plane->area();
 	}
 	return 0.0f; //CHECK ZERO
 }
@@ -77,9 +77,6 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 
 			if (no_light) {
 				estimated_radiance += compute_radiance(new_intersection, depth + 1) * intersection.object->_material->get_color() * glm::dot(intersection.object->get_normal_at(intersection.point), new_dir) / glm::pi<float>(); //Should have PDF, now just pi
-				//if (glm::length(estimated_radiance) != 0) {
-				//	std::cout << "COLOR!!" << std::endl;
-				//}
 			}
 		}
 

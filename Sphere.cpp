@@ -51,3 +51,21 @@ glm::vec3 Sphere::get_normal_at(const glm::vec3 &hit_point)
 {
 	return glm::normalize(hit_point - _position);
 }
+
+float Sphere::area()
+{
+	return 0.0f;
+}
+
+float Sphere::uniform_pdf()
+{
+	return 0.0f;
+}
+
+glm::vec3 Sphere::uniform_random_sample() {
+	return glm::vec3(0);
+}
+
+void Sphere::uniform_random_sample(int nr_samples, std::vector<glm::vec3>& samples)
+{
+}

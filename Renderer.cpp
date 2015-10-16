@@ -18,21 +18,23 @@ glm::vec3 Renderer::radiance(const Ray &ray) {
 
 glm::vec3 Renderer::compute_radiance(const Intersection &intersection, int depth) {
 	glm::vec3 estimated_radiance;
-	estimated_radiance += compute_direct_light(intersection);
-	//estimated_radiance += compute_indirect_light(intersection, depth);
-
+	estimated_radiance += 0.9f * compute_direct_light(intersection);
+	estimated_radiance += 0.1f * compute_indirect_light(intersection, depth);
 	return estimated_radiance;
 }
 
 glm::vec3 Renderer::compute_direct_light(const Intersection &intersection) {
-	glm::vec3 estimated_radiance;
+	glm::vec3 estimated_radiance(0);
+	glm::vec3 sample_point(0);
+	glm::vec3 normal(intersection.object->get_normal_at(intersection.point));
 	int nr_lights = static_cast<int>(_scene.get_light_sources().size());
 	for (int i = 0; i < _shadow_rays; ++i) {
 		int index = glm::linearRand(0, nr_lights - 1);
 		std::shared_ptr<Primitive> light = _scene.get_light_sources().at(index);
-		glm::vec3 sample_point = light->uniform_random_sample();
-		float probability = probability_distribution(light) * light->uniform_pdf();
-		estimated_radiance += light->_material->get_emitted() * radiance_transfer(intersection, light, sample_point) / probability; //NO BRDF YET
+		sample_point = light->uniform_random_sample();
+		float probability = probability_distribution(light) * light->uniform_pdf(); //Maybe something better?
+		glm::vec3 brdf = intersection.object->_material->get_brdf_color_mult(normal, glm::normalize(sample_point - intersection.point), intersection.direction);
+		estimated_radiance += light->_material->get_emitted() * brdf * radiance_transfer(intersection, light, sample_point) / probability;
 	}
 	return estimated_radiance / (float)_shadow_rays; //Division of #paths, need to change for indirect illumination
 }
@@ -59,28 +61,31 @@ float Renderer::probability_distribution(const std::shared_ptr<Primitive> &objec
 glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int depth) {
 	glm::vec3 estimated_radiance(0);
 	//int russian_roulette = (int)glm::linearRand(0.0f, 5.0f);
-	if (depth < 2) {
+	if (depth < 1) {
 		int nr_rays = (int)glm::linearRand(1.0f, 5.0f);
 		for (int i = 0; i < nr_rays; ++i) {
 			glm::vec3 surface_normal = intersection.object->get_normal_at(intersection.point);
-			glm::vec3 new_dir = intersection.direction - 2.0f * (glm::dot(surface_normal, intersection.direction)) * surface_normal;
+			glm::vec3 new_dir = 2.0f * (glm::dot(surface_normal, intersection.direction)) * surface_normal - intersection.direction;
 			Ray new_ray(intersection.point, new_dir);
 			Intersection new_intersection;
 			new_intersection.direction = -new_dir;
 			find_nearest(new_ray, new_intersection.distance, new_intersection.point, new_intersection.object);
-			bool no_light = true;
-			for (auto it = _scene.get_light_sources().cbegin(); it != _scene.get_light_sources().cend(); ++it) {
-				if (new_intersection.object.get() == (*it).get()) {
-					no_light = false;
+			if (new_intersection.point != Primitive::_no_intersection)
+			{
+				bool no_light = true;
+				for (auto it = _scene.get_light_sources().cbegin(); it != _scene.get_light_sources().cend(); ++it) {
+					if (new_intersection.object.get() == (*it).get()) {
+						no_light = false;
+					}
+				}
+
+				if (no_light) {
+					glm::vec3 brdf = intersection.object->_material->get_brdf_color_mult(surface_normal, new_dir, intersection.direction);
+					estimated_radiance += compute_radiance(new_intersection, depth + 1) * brdf * glm::dot(intersection.object->get_normal_at(intersection.point), new_dir) / glm::pi<float>(); //Should have PDF, now just pi
 				}
 			}
-
-			if (no_light) {
-				estimated_radiance += compute_radiance(new_intersection, depth + 1) * intersection.object->_material->get_color() * glm::dot(intersection.object->get_normal_at(intersection.point), new_dir) / glm::pi<float>(); //Should have PDF, now just pi
-			}
 		}
-
-		//estimated_radiance /= (float)nr_rays; //Should be #paths
+		//estimated_radiance /= (float)depth;
 	}
 
 	return estimated_radiance / 1.0f; //Should be absorption coeff

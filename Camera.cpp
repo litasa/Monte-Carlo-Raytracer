@@ -3,7 +3,7 @@
 #include "glm\gtc\random.hpp"
 #include "Renderer.h"
 #ifndef SHADOW_RAYS
-#define SHADOW_RAYS 20
+#define SHADOW_RAYS 10
 #endif
 #ifndef RECURSION_DEPTH
 #define RECURSION_DEPTH 5
@@ -76,13 +76,16 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 						final_color += renderer.radiance(ray);
 					}
 				}
-				final_color /= (float)sub_pixel_count;
 			}
 			else {
 				set_ray_direction(ray, static_cast<float>(x), static_cast<float>(y));
 				final_color = renderer.radiance(ray);
 			}
 		
+			final_color.r = 1.0f - glm::exp(-final_color.r * 100.0f);
+			final_color.g = 1.0f - glm::exp(-final_color.g * 100.0f);
+			final_color.b = 1.0f - glm::exp(-final_color.b * 100.0f);
+
 			//Synchronize buffer write access
 			mutex.lock();
 			buffer._pixels.at(y).at(x).set_rgb_color_value(final_color * color_ratio);

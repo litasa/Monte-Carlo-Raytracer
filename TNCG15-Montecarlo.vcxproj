@@ -143,9 +143,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="BRDF.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="DiffuseMaterial.h" />
-    <ClInclude Include="LightMaterial.h" />
+    <ClInclude Include="DiffuseBRDF.h" />
+    <ClInclude Include="DummyBRDF.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Pixel.h" />
     <ClInclude Include="PixelBuffer.h" />

@@ -21,7 +21,7 @@ public:
 		scene.add_light_source(area_light); 
 
 		//Add surfaces
-		scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 0, 0), std::make_shared<Material>(glm::vec3(1.0, 0.0, 1.0), glm::vec3(0), diffuse_brdf), 5.0f)); //Implicit surface
+		scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 0, 0), std::make_shared<Material>(glm::vec3(0.5), glm::vec3(0), diffuse_brdf), 5.0f)); //Implicit surface
 		//scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 10, 0), nullptr, 1.0f)); //Implicit surface
 		//scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 10, 0), nullptr, 1.0f)); //Implicit surface
 

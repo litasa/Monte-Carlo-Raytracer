@@ -49,7 +49,7 @@ float Renderer::radiance_transfer(const Intersection &intersection, const std::s
 glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int depth) {
 	glm::vec3 estimated_radiance(0);
 	if (depth < 2) {
-		int nr_rays = (int)glm::linearRand(1.0f, 5.0f);
+		int nr_rays = (int)glm::linearRand(1.0f, 2.0f);
 		for (int i = 0; i < nr_rays; ++i) {
 			glm::vec3 surface_normal = intersection.object->get_normal_at(intersection.point);
 			if (intersection.object->_material->get_brdf()->get_type() == BRDF::BRDFType::DIFFUSE) {
@@ -88,12 +88,20 @@ float Renderer::visibility_term(const glm::vec3 &from_point, const glm::vec3 &di
 }
 
 glm::vec3 Renderer::compute_diffuse_ray(const glm::vec3 normal) {
-	glm::vec3 random(glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f,1.0f));
-	random = glm::normalize(random);
-	if (glm::dot(normal, random) < 0) {
-		random = -random;
+	int abort = 0;
+	while (true)
+	{
+		glm::vec3 random_dir = glm::normalize(glm::sphericalRand(1.0f));
+		if (glm::dot(random_dir, normal) > 0) {
+			return random_dir;
+		}
+
+		abort++;
+		if (abort > 500)
+		{
+			return random_dir;
+		}
 	}
-	return random;
 }
 
 void Renderer::find_nearest(const Ray &ray, float &nearest_distance, glm::vec3 &nearest_point, std::shared_ptr<Primitive> &nearest_primitive) {

@@ -74,21 +74,21 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 					for (unsigned int x_ray = 0; x_ray < sub_pixel_count; ++x_ray) {
 						set_jittered_ray_direction(ray, static_cast<float>(x), static_cast<float>(y), sub_pixel_step, 1.0f);
 						final_color += renderer.radiance(ray);
+						final_color /= sub_pixel_count;
 					}
 				}
 			}
 			else {
 				set_ray_direction(ray, static_cast<float>(x), static_cast<float>(y));
-				final_color = renderer.radiance(ray);
+				final_color += renderer.radiance(ray);
 			}
-		
-			final_color.r = 1.0f - glm::exp(-final_color.r);
-			final_color.g = 1.0f - glm::exp(-final_color.g);
-			final_color.b = 1.0f - glm::exp(-final_color.b);
+			final_color.x = glm::clamp(final_color.x, 0.0f, 1.0f);
+			final_color.y = glm::clamp(final_color.y, 0.0f, 1.0f);
+			final_color.z = glm::clamp(final_color.z, 0.0f, 1.0f);
 
 			//Synchronize buffer write access
 			mutex.lock();
-			buffer._pixels.at(y).at(x).set_rgb_color_value(final_color * color_ratio);
+			buffer._pixels.at(y).at(x).set_rgb_color_value(final_color);
 			mutex.unlock();
 		}
 	}

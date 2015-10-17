@@ -26,10 +26,10 @@ public:
 		//scene.add_primitive(std::make_shared<Sphere>(glm::vec3(0, 10, 0), nullptr, 1.0f)); //Implicit surface
 
 		//Add walls
-		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0, 15, 0), std::make_shared<Material>(glm::vec3(1.0, 1.0, 0.0), glm::vec3(0), diffuse_brdf), glm::vec3(0, -1, 0))); //Ceiling plane
-		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0, -15, 0), std::make_shared<Material>(glm::vec3(0.0, 1.0, 0.0), glm::vec3(0), diffuse_brdf), glm::vec3(0, 1, 0))); //Floor plane
-		scene.add_primitive(std::make_shared<Plane>(glm::vec3(-15, 0, 0), std::make_shared<Material>(glm::vec3(1.0, 0.0, 0.0), glm::vec3(0), diffuse_brdf), glm::vec3(1, 0, 0))); //Left plane
-		scene.add_primitive(std::make_shared<Plane>(glm::vec3(15, 0, 0), std::make_shared<Material>(glm::vec3(0.0, 1.0, 1.0), glm::vec3(0), diffuse_brdf), glm::vec3(-1, 0, 0))); //Right plane
-		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0, 0, 15), std::make_shared<Material>(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0), diffuse_brdf), glm::vec3(0, 0, -1))); //Back plane
+		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0, 15, 0), std::make_shared<Material>(glm::vec3(0.5, 0.0, 0.0), glm::vec3(0), diffuse_brdf), glm::vec3(0, -1, 0))); //Ceiling plane
+		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0, -15, 0), std::make_shared<Material>(glm::vec3(0.0, 0.5, 0.0), glm::vec3(0), diffuse_brdf), glm::vec3(0, 1, 0))); //Floor plane
+		scene.add_primitive(std::make_shared<Plane>(glm::vec3(-15, 0, 0), std::make_shared<Material>(glm::vec3(0.5, 0.5, 0.0), glm::vec3(0), diffuse_brdf), glm::vec3(1, 0, 0))); //Left plane
+		scene.add_primitive(std::make_shared<Plane>(glm::vec3(15, 0, 0), std::make_shared<Material>(glm::vec3(0.5, 0.5, 0.5), glm::vec3(0), diffuse_brdf), glm::vec3(-1, 0, 0))); //Right plane
+		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0, 0, 15), std::make_shared<Material>(glm::vec3(0.0, 0.0, 0.5), glm::vec3(0), diffuse_brdf), glm::vec3(0, 0, -1))); //Back plane
 	}
 };

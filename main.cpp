@@ -7,17 +7,16 @@
 #define PROG_ARGS 3
 #define NO_PROG_ARGS 1
 #ifndef DEFAULT_WIDTH
-#define DEFAULT_WIDTH 1280
+#define DEFAULT_WIDTH 128
 #endif
 #ifndef DEFAULT_HEIGHT
-#define DEFAULT_HEIGHT 720
+#define DEFAULT_HEIGHT 128
 #endif
 /// The program takes as arguments the width and height of the screen.
 /// In the future it will maybe be able to parse a scene description.
 /// Happy raytracing!
 /// Authors: Andreas Christoffer Larsson, Jakob Törmä Ruhl
 int main(int argc, char *argv[]) {
-
 	int w, h;
 	if (argc == PROG_ARGS) {
 
@@ -39,9 +38,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	Application application(w, h);
-
 	std::cout << "Press any key to exit." << std::endl;
 	std::cin.ignore(); //Too see output in console
 
 	return STATUS_OK;
+	
 }

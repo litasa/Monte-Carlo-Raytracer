@@ -35,6 +35,7 @@ glm::vec3 Renderer::compute_direct_light(const Intersection &intersection) {
 		sample_point = light->uniform_random_sample();
 		float probability = light_probability * light->uniform_pdf(); //Maybe something better?
 		glm::vec3 brdf = intersection.object->_material->get_brdf_color_mult(normal, glm::normalize(sample_point - intersection.point), intersection.direction);
+		_num_direct_rays++;
 		estimated_radiance += light->_material->get_emitted() * brdf * radiance_transfer(intersection, light, sample_point) / probability;
 	}
 	return estimated_radiance / (float)_shadow_rays;
@@ -48,8 +49,10 @@ float Renderer::radiance_transfer(const Intersection &intersection, const std::s
 
 glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int depth) {
 	glm::vec3 estimated_radiance(0);
-	if (depth < 2) {
-		int nr_rays = (int)glm::linearRand(1.0f, 2.0f);
+	float russian_random = glm::linearRand(0.0f, 1.0f);
+	float absorption = intersection.object->_material->get_brdf()->get_absorption();
+	if (russian_random > absorption) {
+		int nr_rays = (int)glm::linearRand(1.0f, 1.0f);
 		for (int i = 0; i < nr_rays; ++i) {
 			glm::vec3 surface_normal = intersection.object->get_normal_at(intersection.point);
 			if (intersection.object->_material->get_brdf()->get_type() == BRDF::BRDFType::DIFFUSE) {
@@ -62,6 +65,7 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 				{
 					glm::vec3 brdf = intersection.object->_material->get_brdf_color_mult(surface_normal, new_dir, intersection.direction);
 					float dot = glm::max( glm::dot(surface_normal, new_dir), 0.0f);
+					_num_indirect_rays++;
 					estimated_radiance += compute_radiance(new_intersection, depth + 1) * brdf * dot * glm::two_pi<float>(); //PDF is two pi, uniform sampling
 				}
 			}
@@ -69,7 +73,7 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 		estimated_radiance /= (float)nr_rays;
 	}
 
-	return estimated_radiance / 1.0f; //Should be absorption coeff
+	return estimated_radiance / (1 - absorption); //Should be absorption coeff
 }
 
 float Renderer::geometry_term(const glm::vec3 &point_a, const glm::vec3 &point_b, const glm::vec3 &normal_a, const glm::vec3 &normal_b) {

@@ -58,6 +58,10 @@ void Camera::concurrent_initial_raycast(const Scene &scene, PixelBuffer &buffer)
 }
 
 void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsigned int x_id, unsigned y_id, unsigned int tile_width, unsigned int tile_height) {
+	//lock so we use use same random sample for each thread
+	mutex.lock();
+	std::srand((unsigned int)std::time(0));
+	mutex.unlock();
 	Ray ray;
 	ray._importance = 1.0;
 	Renderer renderer(scene, RECURSION_DEPTH, SHADOW_RAYS);
@@ -92,6 +96,8 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 			mutex.unlock();
 		}
 	}
+	std::cout << "\nNumber of direct rays: " << renderer.get_num_direct_rays() << std::endl;
+	std::cout << "Number of indirect rays: " << renderer.get_num_indirect_rays() << std::endl;
 }
 
 void Camera::set_ray_direction(Ray &ray, float x, float y) {

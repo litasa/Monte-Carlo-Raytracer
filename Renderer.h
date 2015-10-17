@@ -17,13 +17,19 @@ struct Intersection {
 class Renderer {
 public:
 	Renderer() = default;
-	Renderer(const Scene &scene, int recursion_depth, int shadow_rays) : _scene(scene), _recursion_depth(recursion_depth), _shadow_rays(shadow_rays) {}
+	Renderer(const Scene &scene, int recursion_depth, int shadow_rays) : _scene(scene), _recursion_depth(recursion_depth), _shadow_rays(shadow_rays) { _num_direct_rays = 0; _num_indirect_rays = 0; }
 	glm::vec3 radiance(const Ray &ray);
+
+	int get_num_direct_rays() const { return _num_direct_rays; }
+	int get_num_indirect_rays() const  { return _num_indirect_rays; }
 	
 private:
 	const Scene _scene;
 	int _recursion_depth;
 	int _shadow_rays;
+
+	int _num_indirect_rays;
+	int _num_direct_rays;
 
 	glm::vec3 compute_radiance(const Intersection &intersection, int depth);
 	glm::vec3 compute_indirect_light(const Intersection &intersection, int depth);

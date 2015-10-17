@@ -1,47 +1,41 @@
 #pragma once
 #include "glm\glm.hpp"
 #include "Scene.h"
+#include "Plane.h"
 #include "Ray.h"
+
+///Holds information about the nearest intersection
+struct Intersection {
+	Intersection() = default;
+	float distance;
+	glm::vec3 point;
+	glm::vec3 direction;
+	std::shared_ptr<Primitive> object;
+};
+
 ///A renderer takes a scene and a ray computes the light for a pixel
 class Renderer {
 public:
 	Renderer() = default;
-	glm::vec3 compute_light(const Scene &scene, const Ray &ray, const glm::vec3 camera_pos) {
+	Renderer(const Scene &scene, int recursion_depth, int shadow_rays) : _scene(scene), _recursion_depth(recursion_depth), _shadow_rays(shadow_rays) {}
+	glm::vec3 radiance(const Ray &ray);
+	
+private:
+	const Scene _scene;
+	int _recursion_depth;
+	int _shadow_rays;
 
-		float nearest_to_camera = std::numeric_limits<float>().max();
-		glm::vec3 nearest_hit_point = Primitive::_no_intersection;
-		std::shared_ptr<Primitive> nearest_primitive;
+	glm::vec3 compute_radiance(const Intersection &intersection, int depth);
+	glm::vec3 compute_indirect_light(const Intersection &intersection, int depth);
+	glm::vec3 compute_direct_light(const Intersection &intersection);
+	float radiance_transfer(const Intersection &intersection, const std::shared_ptr<Primitive> &object, const glm::vec3 &sample_point);
+	glm::vec3 compute_diffuse_ray(const glm::vec3 normal);
 
-		for (auto it = scene.get_primitives().cbegin(); it != scene.get_primitives().cend(); ++it) {
-			glm::vec3 hit_point = (*it)->intersection(ray);
-			if (hit_point != Primitive::_no_intersection) {
-				//If squared distance to hit point is smaller than before
-				float distance_to_camera = glm::length(hit_point - camera_pos);
-				if (distance_to_camera < nearest_to_camera) {
-					nearest_to_camera = distance_to_camera;
-					nearest_hit_point = hit_point;
-					nearest_primitive = (*it);
-				}
-			}
-		}
-
-		//If we have an intersection, check what type...
-		if (nearest_primitive != nullptr) {
-			if (nearest_primitive->_material->_reflective >= 1.0f)
-			{
-				//TODO: Pure reflective materia (SHINY)
-			}
-			else if (nearest_primitive->_material->_refractive >= 1.0f)
-			{
-				//TODO: Pure refractive materia (I CAN SEE YOUR HOME FROM HERE)
-			}
-			else //Handle it as a diffuse
-			{
-				//float dot = glm::dot(glm::normalize(nearest_primitive->get_normal_at(nearest_hit_point)), glm::normalize(-ray._direction));
-				return nearest_primitive->_material->get_color();/*  *glm::max(0.0f, dot); */ //output the color
-			}
-		}
-
-		return glm::vec3(0);
-	}
+	//float radiance_transfer(const glm::vec3 &point_a, const glm::vec3 &point_b, const glm::vec3 &normal_a, const glm::vec3 &normal_b, const std::shared_ptr<Primitive> &object);
+	void find_nearest(const Ray &ray, float &nearest_distance, glm::vec3 &nearest_point, std::shared_ptr<Primitive> &nearest_primitive);
+	//The geometry term. Advanced Global Illumination page 43.
+	float geometry_term(const glm::vec3 &point_a, const glm::vec3 &point_b, const glm::vec3 &normal_a, const glm::vec3 &normal_b);
+	//The visibility term
+	float visibility_term(const glm::vec3 &from_point, const glm::vec3 &direction, const std::shared_ptr<Primitive> &primitive);
 };
+

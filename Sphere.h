@@ -12,5 +12,11 @@ public:
 
 private:
 	float _radius;
+
+	// Inherited via Primitive
+	virtual float area() override;
+	virtual float uniform_pdf() override;
+	virtual glm::vec3 uniform_random_sample() override;
+	virtual void uniform_random_sample(int nr_samples, std::vector<glm::vec3>& samples) override;
 };
 

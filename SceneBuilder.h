@@ -31,5 +31,7 @@ public:
 		scene.add_primitive(std::make_shared<Plane>(glm::vec3(-15, 0, 0), std::make_shared<Material>(glm::vec3(0.5, 0.5, 0.0), glm::vec3(0), diffuse_brdf), glm::vec3(1, 0, 0))); //Left plane
 		scene.add_primitive(std::make_shared<Plane>(glm::vec3(15, 0, 0), std::make_shared<Material>(glm::vec3(0.5, 0.5, 0.5), glm::vec3(0), diffuse_brdf), glm::vec3(-1, 0, 0))); //Right plane
 		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0, 0, 15), std::make_shared<Material>(glm::vec3(0.0, 0.0, 0.5), glm::vec3(0), diffuse_brdf), glm::vec3(0, 0, -1))); //Back plane
+
+		scene.get_bounding_volume_hierarchy().initialize(scene.get_primitives(), 2);
 	}
 };

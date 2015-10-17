@@ -7,8 +7,8 @@ Plane::Plane(glm::vec3 position, std::shared_ptr<Material> material, glm::vec3 n
 	: Primitive(position, material), _normal(normal), _size_x(size_x), _size_y(size_y), _size_z(size_z), _d(-glm::dot(normal, position))
 {
 	compute_area();
-	//This is used often
 	_half_sizes = get_sizes() * 0.5f;
+	_box = BoundingBox(glm::vec3(_size_x * 0.5f, _size_y * 0.5f, _size_z * 0.5f));
 }
 
 glm::vec3 Plane::intersection(const Ray &ray)

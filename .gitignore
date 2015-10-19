@@ -246,4 +246,4 @@ FakesAssemblies/
 _Pvt_Extensions
 
 # tga ignored
-*.tga
+#*.tga

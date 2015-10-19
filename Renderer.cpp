@@ -5,18 +5,19 @@
 glm::vec3 Renderer::radiance(const Ray &ray) {
 	//Find the nearest intersection point and its primitive
 	Intersection intersection;
-	find_nearest(ray, intersection.distance, intersection.point, intersection.object);
+	find_nearest(ray, intersection);
 	//If we have an intersection
-	if (intersection.object != nullptr) {
+	if (intersection._object != nullptr) {
 		//Light travels to the eye
-		intersection.direction = -ray._direction;
-		return intersection.object->_material->get_emitted() + compute_radiance(intersection, 0);
+		intersection._radiance_direction = -ray._direction;
+		return intersection._object->_material->get_emitted() + compute_radiance(intersection, 0);
 	}
 	//Black if no intersection
 	return glm::vec3(0);
 }
 
 glm::vec3 Renderer::compute_radiance(const Intersection &intersection, int depth) {
+	//This is the recursive function that'll be called for each ray intersection
 	glm::vec3 estimated_radiance;
 	estimated_radiance += compute_direct_light(intersection);
 	estimated_radiance += compute_indirect_light(intersection, depth);
@@ -24,106 +25,113 @@ glm::vec3 Renderer::compute_radiance(const Intersection &intersection, int depth
 }
 
 glm::vec3 Renderer::compute_direct_light(const Intersection &intersection) {
-	glm::vec3 estimated_radiance(0);
-	glm::vec3 sample_point(0);
-	glm::vec3 normal(intersection.object->get_normal_at(intersection.point));
-	int nr_lights = static_cast<int>(_scene.get_light_sources().size());
-	float light_probability = 1.0f / static_cast<float>(nr_lights);
+	glm::vec3 estimated_radiance, sample_point, normal = intersection.get_normal();
+	std::shared_ptr<Primitive> light;
+	std::shared_ptr<Material> material = intersection._object->_material;
+	//The number of shadow rays increases shadow quality
 	for (int i = 0; i < _shadow_rays; ++i) {
-		int index = glm::linearRand(0, nr_lights - 1);
-		std::shared_ptr<Primitive> light = _scene.get_light_sources().at(index);
+		//Choose a random light and sample a point on its surface uniformly
+		light = _scene.get_light_sources()[glm::linearRand(0, _light_count - 1)];
 		sample_point = light->uniform_random_sample();
-		float probability = light_probability * light->uniform_pdf(); //Maybe something better?
-		glm::vec3 brdf = intersection.object->_material->get_brdf_color_mult(normal, glm::normalize(sample_point - intersection.point), intersection.direction);
-		_num_direct_rays++;
+		float probability = _light_probability * light->uniform_pdf(); //Maybe something better?
+		//The BRDF determines the probability of the outgoing radiance in this point in our radiance direction.
+		glm::vec3 brdf = material->get_brdf_color_mult(normal, glm::normalize(sample_point - intersection._point), intersection._radiance_direction);
 		estimated_radiance += light->_material->get_emitted() * brdf * radiance_transfer(intersection, light, sample_point) / probability;
 	}
+	//For debugging
+	mutex.lock();
+	_num_direct_rays += _shadow_rays;
+	mutex.unlock();
+	//Average results over the number of shadow rays, this will give soft shadows since non visible points won't contribute
 	return estimated_radiance / (float)_shadow_rays;
 }
 
 float Renderer::radiance_transfer(const Intersection &intersection, const std::shared_ptr<Primitive> &object, const glm::vec3 &sample_point) {
-	float g = geometry_term(intersection.point, sample_point, intersection.object->get_normal_at(intersection.point), object->get_normal_at(sample_point));
-	float v = visibility_term(intersection.point, glm::normalize(sample_point - intersection.point), object);
+	//The radiance transfer is just a collected term for G and V
+	float g = geometry_term(intersection, sample_point, object->get_normal_at(sample_point));
+	float v = visibility_term(intersection, sample_point, object); 
 	return g * v;
 }
 
 glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int depth) {
-	glm::vec3 estimated_radiance(0);
+	glm::vec3 estimated_radiance;
 	float russian_random = glm::linearRand(0.0f, 1.0f);
-	float absorption = intersection.object->_material->get_brdf()->get_absorption();
-	if (russian_random > absorption) {
-		int nr_rays = (int)glm::linearRand(1.0f, 1.0f);
-		for (int i = 0; i < nr_rays; ++i) {
-			glm::vec3 surface_normal = intersection.object->get_normal_at(intersection.point);
-			if (intersection.object->_material->get_brdf()->get_type() == BRDF::BRDFType::DIFFUSE) {
-				glm::vec3 new_dir = compute_diffuse_ray(surface_normal);
-				Ray new_ray(intersection.point, new_dir);
-				Intersection new_intersection;
-				new_intersection.direction = -new_dir;
-				find_nearest(new_ray, new_intersection.distance, new_intersection.point, new_intersection.object);
-				if (new_intersection.point != Primitive::_no_intersection)
-				{
-					glm::vec3 brdf = intersection.object->_material->get_brdf_color_mult(surface_normal, new_dir, intersection.direction);
-					float dot = glm::max( glm::dot(surface_normal, new_dir), 0.0f);
-					_num_indirect_rays++;
-					estimated_radiance += compute_radiance(new_intersection, depth + 1) * brdf * dot * glm::two_pi<float>(); //PDF is two pi, uniform sampling
+	std::shared_ptr<Material> material = intersection._object->_material;
+	std::shared_ptr<BRDF> brdf = material->get_brdf();
+	//Russian roulette and maximum recursion depth determines if we continue
+	if (russian_random > brdf->get_absorption() && depth < _max_recursion_depth) {
+		int rays = glm::linearRand(15, 20);
+		for (int i = 0; i < rays; ++i) {
+			glm::vec3 surface_normal = intersection.get_normal();
+			//Check if we have a perfect diffuse reflector
+			if (brdf->get_type() == BRDF::BRDFType::DIFFUSE) {
+				//Find a random direction on the hemisphere on the surface
+				glm::vec3 diffuse_dir = compute_diffuse_ray(surface_normal);
+				Ray indirect_ray(intersection._point, diffuse_dir);
+				Intersection indirect(-diffuse_dir);
+				find_nearest(indirect_ray, indirect);
+				//If some object is transfering radiance to our intersection point
+				if (indirect._point != Primitive::_no_intersection) {
+					//The BRDF determines the probability of the outgoing radiance in this point in our radiance direction.
+					//The dot product is the cos(theta) that determines how easily light is reflected in this point
+					glm::vec3 brdf_contribution = material->get_brdf_color_mult(surface_normal, diffuse_dir, intersection._radiance_direction);
+					estimated_radiance += compute_radiance(indirect, depth + 1) * brdf_contribution * glm::dot(surface_normal, diffuse_dir) * glm::two_pi<float>(); //PDF is two pi, uniform sampling
 				}
 			}
 		}
-		estimated_radiance /= (float)nr_rays;
+		//Take the average (Monte Carlo sampling)
+		estimated_radiance /= (float)rays;
+		//For debugging
+		mutex.lock();
+		_num_indirect_rays += rays;
+		mutex.unlock();
 	}
 
-	return estimated_radiance / (1 - absorption); //Should be absorption coeff
+	//If there's a high absorption this estimated radiance will have large contribution to the final estimated radiance
+	return estimated_radiance / (1.0f - brdf->get_absorption());
 }
 
-float Renderer::geometry_term(const glm::vec3 &point_a, const glm::vec3 &point_b, const glm::vec3 &normal_a, const glm::vec3 &normal_b) {
-	glm::vec3 dir = glm::normalize(point_b - point_a);
-	float cos_a = glm::dot(glm::normalize(normal_a), dir);
-	float cos_b = glm::dot(glm::normalize(normal_b), -dir);
-	//Multiply with some scaling factor so that color isn't black all the time.
-	return 100.0f * (cos_a * cos_b) / (glm::dot(point_b - point_a, point_b - point_a));
+float Renderer::geometry_term(const Intersection &intersection, const glm::vec3 &point, const glm::vec3 &normal) {
+	//For direct illumination this this basically gives us the projected solid angle onto the intersection point.
+	glm::vec3 dir = glm::normalize(point - intersection._point);
+	float cos_a = glm::dot(intersection.get_normal(), dir);
+	float cos_b = glm::dot(normal, -dir);
+	glm::vec3 distance = point - intersection._point;
+	//Squared fall-off for lights
+	return cos_a * cos_b / glm::dot(distance, distance);
 }
 
-float Renderer::visibility_term(const glm::vec3 &from_point, const glm::vec3 &direction, const std::shared_ptr<Primitive> &primitive) {
-	Intersection intersection;
-	Ray ray(from_point, direction);
-	find_nearest(ray, intersection.distance, intersection.point, intersection.object);
-	return intersection.object.get() == primitive.get() ? 1.0f : 0.0f;
+float Renderer::visibility_term(const Intersection &intersection, const glm::vec3 &point, const std::shared_ptr<Primitive> &primitive) {
+	//If the given primitive is the same as is intersected, it's visible.
+	Ray ray(intersection._point, glm::normalize(point - intersection._point));
+	Intersection visible;
+	find_nearest(ray, visible);
+	return visible._object == primitive ? 1.0f : 0.0f;
 }
 
 glm::vec3 Renderer::compute_diffuse_ray(const glm::vec3 normal) {
-	int abort = 0;
-	while (true)
-	{
-		glm::vec3 random_dir = glm::normalize(glm::sphericalRand(1.0f));
-		if (glm::dot(random_dir, normal) > 0) {
-			return random_dir;
-		}
-
-		abort++;
-		if (abort > 500)
-		{
-			return random_dir;
-		}
-	}
+	//Sample point on the hemisphere, just reverse it if it's on the "negative" hemisphere. Gives something like a uniform distribution.
+	glm::vec3 random_dir = glm::sphericalRand(1.0f);
+	return glm::dot(random_dir, normal) > 0 ? random_dir : -random_dir;
 }
 
-void Renderer::find_nearest(const Ray &ray, float &nearest_distance, glm::vec3 &nearest_point, std::shared_ptr<Primitive> &nearest_primitive) {
-	nearest_distance = std::numeric_limits<float>().max();
-	nearest_point = Primitive::_no_intersection;
-	nearest_primitive = nullptr;
+void Renderer::find_nearest(const Ray &ray, Intersection &intersection) {
+	intersection._distance =  _max_ray_distance;
+	intersection._point = Primitive::_no_intersection;
+	intersection._object = nullptr;
 	//Search the scene geometry
+	glm::vec3 hit_point;
 	for (auto it = _scene.get_primitives().cbegin(); it != _scene.get_primitives().cend(); ++it) {
-		glm::vec3 hit_point = (*it)->intersection(ray);
+		hit_point = (*it)->intersection(ray);
 		if (hit_point != Primitive::_no_intersection) {
 			//Account for self intersection
-			hit_point += 0.0001f * (*it)->get_normal_at(hit_point);
+			hit_point += _ray_epsilon * (*it)->get_normal_at(hit_point);
 			//If squared distance to hit point is smaller than before
-			float distance = glm::length(hit_point - ray._origin);
-			if (distance < nearest_distance) {
-				nearest_distance = distance;
-				nearest_point = hit_point;
-				nearest_primitive = (*it);
+			float distance = glm::distance(hit_point, ray._origin);
+			if (distance < intersection._distance) {
+				intersection._distance = distance;
+				intersection._point = hit_point;
+				intersection._object = (*it);
 			}
 		}
 	}

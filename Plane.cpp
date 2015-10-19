@@ -4,26 +4,25 @@
 #include <iostream>
 
 Plane::Plane(glm::vec3 position, std::shared_ptr<Material> material, glm::vec3 normal, float size_x, float size_y, float size_z)
-	: Primitive(position, material), _normal(normal), _size_x(size_x), _size_y(size_y), _size_z(size_z), _d(-glm::dot(normal, position))
-{
+	: Primitive(position, material), _normal(normal), _size_x(size_x), _size_y(size_y), _size_z(size_z), _d(-glm::dot(normal, position)) {
 	compute_area();
-	//This is used often
 	_half_sizes = get_sizes() * 0.5f;
+	_epsilon = std::numeric_limits<float>().epsilon();
 }
 
 glm::vec3 Plane::intersection(const Ray &ray)
 {
 	float intersection(glm::dot(_normal, ray._origin) + _d);
 	float angle(glm::dot(ray._direction, _normal));
-	if ((intersection > 0 && angle > 0) || (intersection < 0 && angle < 0))
-	{
+	if ((intersection > _epsilon && angle > _epsilon) || (intersection < _epsilon && angle < _epsilon)) {
 		return _no_intersection;
 	}
 
 	float t = -intersection / angle;
 	glm::vec3 hit_point = ray._origin + t * ray._direction;
 	//All these conditions need to be fullfilled, thus we discard if one of the conditions are false
-	if (glm::abs(hit_point.x - _position.x) <= _size_x && glm::abs(hit_point.y - _position.y) <= _size_y && glm::abs(hit_point.z - _position.z) <= _size_z) {
+	glm::vec3 plane_point(hit_point - _position);
+	if (glm::abs(plane_point.x) <= _size_x && glm::abs(plane_point.y) <= _size_y && glm::abs(plane_point.z) <= _size_z) {
 		return hit_point;
 	}
 

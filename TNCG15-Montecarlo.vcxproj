@@ -148,7 +148,6 @@
     <ClInclude Include="DiffuseBRDF.h" />
     <ClInclude Include="DummyBRDF.h" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="Pixel.h" />
     <ClInclude Include="PixelBuffer.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Primitive.h" />

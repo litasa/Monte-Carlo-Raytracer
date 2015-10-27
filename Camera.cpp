@@ -72,7 +72,7 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 						final_color += renderer.radiance(ray);
 					}
 				}
-				final_color /= sub_pixel_count;
+				final_color /= (2.0f * sub_pixel_count);
 			}
 			else {
 				set_ray_direction(ray, static_cast<float>(x), static_cast<float>(y));
@@ -80,9 +80,9 @@ void Camera::concurrent_help_func(const Scene &scene, PixelBuffer &buffer, unsig
 			}
 
 			//Square root brings gives a good representation of the flux in the scene, scaled to make it brighter and clamped to keep a valid RGB value
-			final_color.x = glm::clamp(glm::sqrt(final_color.x * 20.0f), 0.0f, 1.0f);
-			final_color.y = glm::clamp(glm::sqrt(final_color.y * 20.0f), 0.0f, 1.0f);
-			final_color.z = glm::clamp(glm::sqrt(final_color.z * 20.0f), 0.0f, 1.0f);
+			final_color.x = glm::clamp(glm::sqrt(final_color.x), 0.0f, 1.0f);
+			final_color.y = glm::clamp(glm::sqrt(final_color.y), 0.0f, 1.0f);
+			final_color.z = glm::clamp(glm::sqrt(final_color.z), 0.0f, 1.0f);
 
 			//Synchronize buffer write access
 			mutex.lock();

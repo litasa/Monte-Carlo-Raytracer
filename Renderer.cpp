@@ -60,7 +60,7 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 	std::shared_ptr<BRDF> brdf = material->get_brdf();
 	//Russian roulette and maximum recursion depth determines if we continue
 	if (russian_random > brdf->get_absorption() && depth < _max_recursion_depth) {
-		int rays = glm::linearRand(15, 20);
+		int rays = 1;// glm::linearRand(15, 20);
 		for (int i = 0; i < rays; ++i) {
 			glm::vec3 surface_normal = intersection.get_normal();
 			//Check if we have a perfect diffuse reflector

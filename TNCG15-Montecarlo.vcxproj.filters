@@ -13,18 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Materials &amp; BRDFS">
+      <UniqueIdentifier>{d359a2c8-018a-4c2d-9bbd-486d997952fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Primitives">
+      <UniqueIdentifier>{a177a58e-a4b9-4310-b816-9f446a0009ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\File Writer">
+      <UniqueIdentifier>{0aec526c-0614-4887-8f5c-1587e2884fdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Primitives">
+      <UniqueIdentifier>{4c0bc3da-726d-47e9-a613-58c84eccb97a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PixelBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Ray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TgaWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
@@ -39,26 +45,38 @@
     <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Primitive.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Plane.h">
+    <ClInclude Include="kdTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BRDF.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Materials &amp; BRDFS</Filter>
     </ClInclude>
     <ClInclude Include="DiffuseBRDF.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Materials &amp; BRDFS</Filter>
     </ClInclude>
     <ClInclude Include="DummyBRDF.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Materials &amp; BRDFS</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\Materials &amp; BRDFS</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="TgaWriter.h">
+      <Filter>Header Files\File Writer</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelBuffer.h">
+      <Filter>Header Files\File Writer</Filter>
+    </ClInclude>
+    <ClInclude Include="OrenNayarBRDF.h">
+      <Filter>Header Files\Materials &amp; BRDFS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -71,17 +89,20 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Plane.cpp">
+    <ClCompile Include="Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.cpp">
+    <ClCompile Include="kdTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Primitive.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Source Files\Primitives</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

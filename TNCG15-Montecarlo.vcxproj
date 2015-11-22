@@ -147,7 +147,9 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DiffuseBRDF.h" />
     <ClInclude Include="DummyBRDF.h" />
+    <ClInclude Include="kdTree.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="OrenNayarBRDF.h" />
     <ClInclude Include="PixelBuffer.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Primitive.h" />
@@ -160,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="kdTree.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Primitive.cpp" />

@@ -9,13 +9,13 @@
 #define NO_PROG_ARGS 1
 //Program arguments
 #ifndef DEFAULT_WIDTH
-#define DEFAULT_WIDTH 64
+#define DEFAULT_WIDTH 128
 #endif
 #ifndef DEFAULT_HEIGHT
-#define DEFAULT_HEIGHT 64
+#define DEFAULT_HEIGHT 128
 #endif
 #ifndef DEFAULT_RAYS_PER_PIXEL
-#define DEFAULT_RAYS_PER_PIXEL 256
+#define DEFAULT_RAYS_PER_PIXEL 128
 #endif 
 #ifndef DEFAULT_SHADOW_RAYS 
 #define DEFAULT_SHADOW_RAYS 4
@@ -24,7 +24,7 @@
 #define DEFAULT_MAXIMUM_RECURSION_DEPTH 1
 #endif
 #ifndef DEFAULT_FILE_NAME
-#define DEFAULT_FILE_NAME "raytraced_image.tga"
+#define DEFAULT_FILE_NAME "raytraced_image_OrenNayarTest.tga"
 #endif
 /// The program takes as arguments:
 ///	* Width of the image in pixels

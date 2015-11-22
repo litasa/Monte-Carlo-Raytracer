@@ -7,6 +7,7 @@
 #include "Material.h"
 #include "DummyBRDF.h"
 #include "DiffuseBRDF.h"
+#include "OrenNayarBRDF.h"
 /// This is just an incapsulation of the creation of a scene object.
 class SceneBuilder {
 public:
@@ -17,6 +18,7 @@ public:
 		std::shared_ptr<DiffuseBRDF> diffuse_brdf = std::make_shared<DiffuseBRDF>();
 		std::shared_ptr<DiffuseBRDF> second_diffuse_brdf = std::make_shared<DiffuseBRDF>();
 		second_diffuse_brdf->set_absorption(0.0f);
+		std::shared_ptr<OrenNayarBRDF> oren_diffuse_brdf = std::make_shared<OrenNayarBRDF>();
 		//Add light sources to both vectors, easier to compare if light was intersected
 		std::shared_ptr<Plane> area_light1 = std::make_shared<Plane>(glm::vec3(5.0f, 14.99f, 5.0f), std::make_shared<Material>(glm::vec3(1.0f), glm::vec3(1.0f), dummy_brdf), glm::vec3(0, -1, 0), 2.5f, 2.5f, 2.5f);
 		std::shared_ptr<Plane> area_light2 = std::make_shared<Plane>(glm::vec3(-5.0f, 14.99f, 5.0f), std::make_shared<Material>(glm::vec3(1.0f), glm::vec3(1.0f), dummy_brdf), glm::vec3(0, -1, 0), 2.5f, 2.5f, 2.5f);
@@ -27,8 +29,8 @@ public:
 		scene.add_primitive(area_light3); scene.add_light_source(area_light3);
 		scene.add_primitive(area_light4); scene.add_light_source(area_light4);
 		//Add surfaces
-		scene.add_primitive(std::make_shared<Sphere>(glm::vec3(9.0f, -10.0f, -5.0f), std::make_shared<Material>(glm::vec3(0.5f), glm::vec3(0.0f), diffuse_brdf), 5.0f)); //Implicit surface
-		scene.add_primitive(std::make_shared<Sphere>(glm::vec3(-5.0f, -10.0f, 9.0f), std::make_shared<Material>(glm::vec3(0.5f), glm::vec3(0.0f), diffuse_brdf), 5.0f)); //Implicit surface
+		scene.add_primitive(std::make_shared<Sphere>(glm::vec3(9.0f, -10.0f, -5.0f), std::make_shared<Material>(glm::vec3(0.5f), glm::vec3(0.0f), oren_diffuse_brdf), 5.0f)); //Implicit surface
+		scene.add_primitive(std::make_shared<Sphere>(glm::vec3(-5.0f, -10.0f, 9.0f), std::make_shared<Material>(glm::vec3(0.5f), glm::vec3(0.0f), oren_diffuse_brdf), 5.0f)); //Implicit surface
 		//Add walls
 		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0.0f, 15.0f, 0.0f), std::make_shared<Material>(glm::vec3(0.32f, 0.31f, 0.33f), glm::vec3(0.0f), second_diffuse_brdf), glm::vec3(0.0f, -1.0f, 0.0f))); //Ceiling plane
 		scene.add_primitive(std::make_shared<Plane>(glm::vec3(0.0f, -15.0f, 0.0f), std::make_shared<Material>(glm::vec3(0.31f, 0.31f, 0.32f), glm::vec3(0.0f), diffuse_brdf), glm::vec3(0.0f, 1.0f, 0.0f))); //Floor plane

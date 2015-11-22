@@ -1,6 +1,7 @@
 #include "Plane.h"
 #include "glm\glm.hpp"
 #include "glm\gtc\random.hpp"
+#include "glm\gtx\rotate_vector.hpp"
 #include <iostream>
 
 Plane::Plane(glm::vec3 position, std::shared_ptr<Material> material, glm::vec3 normal, float size_x, float size_y, float size_z)
@@ -8,6 +9,17 @@ Plane::Plane(glm::vec3 position, std::shared_ptr<Material> material, glm::vec3 n
 	compute_area();
 	_half_sizes = get_sizes() * 0.5f;
 	_epsilon = std::numeric_limits<float>().epsilon();
+	
+	//calculate axis aligned coordinate system, for the plane
+	glm::vec3 temp = normal + glm::vec3(1);
+	//project to the plane for a othogonal vector to the plane normal
+	_t_hat = temp - (glm::dot(temp, _normal) / glm::length(normal))*temp;
+	//then do a cross production to find the othogonal vector to the normal and _t_hat
+	_s_hat = glm::cross(normal, _t_hat);
+	
+	glm::normalize(_t_hat);
+	glm::normalize(_s_hat);
+
 }
 
 glm::vec3 Plane::intersection(const Ray &ray)
@@ -96,6 +108,8 @@ glm::vec2 Plane::get_sizes() {
 
 glm::vec3 Plane::get_offset_on_plane(float x, float y) {
 	glm::vec3 point_on_plane(0);
+	//point_on_plane = x*_t_hat + y*_s_hat;
+	
 	if (glm::abs(_normal.y)) {
 		point_on_plane = glm::vec3(_position.x + x, _position.y, _position.z + y);
 	}
@@ -105,6 +119,7 @@ glm::vec3 Plane::get_offset_on_plane(float x, float y) {
 	else if (glm::abs(_normal.z)) {
 		point_on_plane = glm::vec3(_position.x + x, _position.y + y, _position.z);
 	}
+	
 	return point_on_plane;
 }
 

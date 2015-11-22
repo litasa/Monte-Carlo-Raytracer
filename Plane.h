@@ -26,7 +26,7 @@ public:
 	glm::vec3 intersection(const Ray &ray) override;
 	glm::vec3 get_normal_at(const glm::vec3 &hit_point) override;
 private:
-	glm::vec3 _normal;
+	glm::vec3 _normal, _t_hat, _s_hat;
 	float _size_x, _size_y, _size_z, _d, _area, _inverse_area, _epsilon;
 	std::vector<glm::vec3> _points;
 	glm::vec2 _half_sizes;

@@ -8,7 +8,7 @@
 class BRDF {
 public:
 	//There are some different types of BRDFs, there are specular and diffuse surfaces. There's also a dummy one in our case for light sources.
-	enum class BRDFType { DIFFUSE, DUMMY };
+	enum class BRDFType { DIFFUSE, DUMMY, ORENDIFFUSE };
 	virtual ~BRDF() {}
 	//Get the probability for wavelengths being sent in the out direction given the surface information and the incoming light ray.
 	virtual glm::vec3 get(const glm::vec3 &surface_normal, const glm::vec3 &in, const glm::vec3 &out) = 0;

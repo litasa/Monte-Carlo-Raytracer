@@ -64,7 +64,7 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 		for (int i = 0; i < rays; ++i) {
 			glm::vec3 surface_normal = intersection.get_normal();
 			//Check if we have a perfect diffuse reflector
-			if (brdf->get_type() == BRDF::BRDFType::DIFFUSE) {
+			if (brdf->get_type() == BRDF::BRDFType::DIFFUSE || brdf->get_type() == BRDF::BRDFType::ORENDIFFUSE) {
 				//Find a random direction on the hemisphere on the surface
 				glm::vec3 diffuse_dir = compute_diffuse_ray(surface_normal);
 				Ray indirect_ray(intersection._point, diffuse_dir);
@@ -75,7 +75,7 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 					//The BRDF determines the probability of the outgoing radiance in this point in our radiance direction.
 					//The dot product is the cos(theta) that determines how easily light is reflected in this point
 					glm::vec3 brdf_contribution = material->get_brdf_color_mult(surface_normal, diffuse_dir, intersection._radiance_direction);
-					estimated_radiance += compute_radiance(indirect, depth + 1) * brdf_contribution * glm::dot(surface_normal, diffuse_dir) * glm::two_pi<float>(); //PDF is two pi, uniform sampling
+					estimated_radiance += compute_radiance(indirect, depth + 1) * brdf_contribution * glm::two_pi<float>(); //PDF is two pi, uniform sampling
 				}
 			}
 		}

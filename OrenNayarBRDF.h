@@ -19,7 +19,10 @@ public:
 		float B = 0.45f*(_sigma2 / (_sigma2 + 0.09f));
 		float C = sin(alpha)*tan(beta);
 
-		return glm::vec3(A + B*glm::max(0.0f, cosPhiDiff)*C);
+		glm::vec3 res = glm::vec3(A + B*C*glm::max(0.0f, cosPhiDiff));
+		glm::vec3 diffuse = glm::vec3(glm::dot(surface_normal, in) * _rho / glm::pi<float>());
+
+		return res*diffuse;
 		/*
 		glm::vec2 oren_fraction = glm::vec2(_sigma2 / (_sigma2 + 0.33f),
 											_sigma2 / (_sigma2 + 0.09));
@@ -48,5 +51,5 @@ public:
 	BRDFType get_type() override { return BRDFType::ORENDIFFUSE; }
 private:
 	const float _rho = 1.0f; //From 0..1
-	const float _sigma2 = 0.0f; //from 0..inf (it is squared)
+	const float _sigma2 = 0.3f; //from 0..inf (it is squared)
 };

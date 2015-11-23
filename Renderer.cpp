@@ -63,7 +63,7 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 		int rays = 1;// glm::linearRand(15, 20);
 		for (int i = 0; i < rays; ++i) {
 			glm::vec3 surface_normal = intersection.get_normal();
-			//Check if we have a perfect diffuse reflector
+			//Check if we have a diffuse reflector
 			if (brdf->get_type() == BRDF::BRDFType::DIFFUSE || brdf->get_type() == BRDF::BRDFType::ORENDIFFUSE) {
 				//Find a random direction on the hemisphere on the surface
 				glm::vec3 diffuse_dir = compute_diffuse_ray(surface_normal);
@@ -73,10 +73,51 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 				//If some object is transfering radiance to our intersection point
 				if (indirect._point != Primitive::_no_intersection) {
 					//The BRDF determines the probability of the outgoing radiance in this point in our radiance direction.
-					//The dot product is the cos(theta) that determines how easily light is reflected in this point
 					glm::vec3 brdf_contribution = material->get_brdf_color_mult(surface_normal, diffuse_dir, intersection._radiance_direction);
 					estimated_radiance += compute_radiance(indirect, depth + 1) * brdf_contribution * glm::two_pi<float>(); //PDF is two pi, uniform sampling
 				}
+			}
+			else if (brdf->get_type() == BRDF::BRDFType::TRANSPARENT)
+			{
+				float n1 = intersection._from_ref_index;
+				float n2 = intersection._to_ref_index;
+				//calculate the specular component
+				glm::vec3 specular_dir = compute_specular_ray(surface_normal, intersection._radiance_direction);
+				Ray specular_ray(intersection._point, specular_dir);
+				Intersection specular(-specular_dir);
+				find_nearest(specular_ray, specular);
+				//If the angle permits calculate the refracted component
+				if (IsTransmitted(surface_normal, intersection._radiance_direction, n1, n2))
+				{
+					glm::vec3 refracted_dir = compute_refracted_ray(surface_normal, intersection._radiance_direction, n1, n2);
+					Ray refracted_ray(intersection._point, refracted_dir, n2);
+
+					Intersection refracted(-refracted_dir);
+					find_nearest(refracted_ray, refracted);
+
+					float R = 0.5f*((n1 - n2) / (n1 + n2)) * ((n1 - n2) / (n1 + n2));
+					float T = 1 - R;
+
+					estimated_radiance += R*compute_radiance(specular, depth + 1) + T*compute_radiance(refracted,depth+1);
+				}
+				else
+				{
+					estimated_radiance += compute_radiance(specular, depth + 1);
+				}
+				
+
+				//here we should add some radiance contribution based on the specular and refracted rays
+				//using small angle approximation
+			}
+			else if (brdf->get_type() == BRDF::BRDFType::DUMMY)
+			{
+				//this is for the lights. We wont do anything here			
+			}
+			else
+			{
+				std::cout << "this should not happen. No good BRDF Used" << std::endl;
+				std::cin.get();
+				exit(1);
 			}
 		}
 		//Take the average (Monte Carlo sampling)
@@ -115,6 +156,30 @@ glm::vec3 Renderer::compute_diffuse_ray(const glm::vec3 normal) {
 	return glm::dot(random_dir, normal) > 0 ? random_dir : -random_dir;
 }
 
+glm::vec3 Renderer::compute_specular_ray(const glm::vec3 normal, const glm::vec3 incomming)
+{
+	//calculates the perfect specular ray
+	return 2 * glm::dot(normal, incomming)*normal - incomming;
+}
+
+glm::vec3 Renderer::compute_refracted_ray(const glm::vec3 normal, const glm::vec3 incomming, const float from_refIndex, const float to_refIndex)
+{
+	//calculates a recracted ray using Snell's Law
+	float index = from_refIndex / to_refIndex;
+	float nor_inc_dot = glm::dot(normal, incomming);
+	float brewster = 1 - index*index*(1 - (nor_inc_dot*nor_inc_dot));//if this is less then 0 then total internal reflection occures
+	float sqrt_brewster = glm::sqrt(brewster);
+	return -index*incomming + normal*(index*nor_inc_dot - sqrt_brewster);
+}
+
+bool Renderer::IsTransmitted(const glm::vec3 normal, const glm::vec3 incomming, const float from_refIndex, const float to_refIndex)
+{
+	float index = from_refIndex / to_refIndex;
+	float nor_inc_dot = glm::dot(normal, incomming);
+	float brewster = 1 - index*index*(1 - (nor_inc_dot*nor_inc_dot));
+	return brewster > 0 ? true : false;
+}
+
 void Renderer::find_nearest(const Ray &ray, Intersection &intersection) {
 	intersection._distance =  _max_ray_distance;
 	intersection._point = Primitive::_no_intersection;
@@ -132,6 +197,8 @@ void Renderer::find_nearest(const Ray &ray, Intersection &intersection) {
 				intersection._distance = distance;
 				intersection._point = hit_point;
 				intersection._object = (*it);
+				intersection._from_ref_index = ray._index;
+				intersection._to_ref_index = (*it)->_material->get_brdf()->get_refractive_index();
 			}
 		}
 	}

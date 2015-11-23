@@ -6,7 +6,7 @@ class DummyBRDF : public BRDF {
 public:
 	DummyBRDF() : BRDF() {}
 	//Regardless of input just return 1
-	glm::vec3 get(const glm::vec3 &surface_normal, const glm::vec3 &in, const glm::vec3 &out) override {
+	glm::vec3 get(const glm::vec3 &surface_normal, const glm::vec3 &light_dir, const glm::vec3 &view_dir) override {
 		return glm::vec3(1);
 	}
 	//This is just a dummy BRDF

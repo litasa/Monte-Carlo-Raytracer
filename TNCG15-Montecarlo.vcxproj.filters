@@ -78,6 +78,9 @@
     <ClInclude Include="OrenNayarBRDF.h">
       <Filter>Header Files\Materials &amp; BRDFS</Filter>
     </ClInclude>
+    <ClInclude Include="TransparentBRDF.h">
+      <Filter>Header Files\Materials &amp; BRDFS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TgaWriter.cpp">

@@ -13,6 +13,8 @@ struct Intersection {
 	glm::vec3 _point;
 	glm::vec3 _radiance_direction;
 	std::shared_ptr<Primitive> _object;
+	float _from_ref_index;
+	float _to_ref_index;
 };
 ///A renderer takes a scene and a ray computes the light for a pixel. It has complete information of the scene.
 ///It has methods for computing direct and indirect radiance for a point in the scene.
@@ -50,6 +52,13 @@ private:
 	glm::vec3 compute_direct_light(const Intersection &intersection);
 	//Computes a uniformly distributed random direction on the hemisphere
 	glm::vec3 compute_diffuse_ray(const glm::vec3 normal);
+	//Computes a perfect specular ray
+	glm::vec3 compute_specular_ray(const glm::vec3 normal, const glm::vec3 incomming);
+	//Computes a specular refration ray using Snell's Laww
+	glm::vec3 compute_refracted_ray(const glm::vec3 normal, const glm::vec3 incomming, const float from_refIndex, const float to_refIndex);
+	//Checks if the brewster angle is too big for transmittance or not
+	bool IsTransmitted(const glm::vec3 normal, const glm::vec3 incomming, const float from_refIndex, const float to_refIndex);
+	
 	//Combined term for G and V
 	float radiance_transfer(const Intersection &intersection, const std::shared_ptr<Primitive> &object, const glm::vec3 &sample_point);
 	//Find the nearest intersection, sets the intersection data as out parameter

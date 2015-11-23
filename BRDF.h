@@ -8,17 +8,19 @@
 class BRDF {
 public:
 	//There are some different types of BRDFs, there are specular and diffuse surfaces. There's also a dummy one in our case for light sources.
-	enum class BRDFType { DIFFUSE, DUMMY, ORENDIFFUSE };
+	enum class BRDFType { DIFFUSE, ORENDIFFUSE, REFLECT, TRANSPARENT, DUMMY};
 	virtual ~BRDF() {}
 	//Get the probability for wavelengths being sent in the out direction given the surface information and the incoming light ray.
-	virtual glm::vec3 get(const glm::vec3 &surface_normal, const glm::vec3 &in, const glm::vec3 &out) = 0;
+	virtual glm::vec3 get(const glm::vec3 &surface_normal, const glm::vec3 &light_dir, const glm::vec3 &view_dir) = 0;
 	//Get the type of BRDF given by BRDFType
 	virtual BRDFType get_type() = 0;
 	//The absorption determines how much of the light is absorbed at the surface
 	float get_absorption() const { return _absorption; }
 	void set_absorption(float value) { _absorption = value; }
+	float get_refractive_index() const { return _ref_index; }
 protected:
-	BRDF() : _absorption(DEFAULT_ABSORPTION_CONSTANT) {}
+	BRDF(const float refIndex = 1.0f) : _absorption(DEFAULT_ABSORPTION_CONSTANT), _ref_index(refIndex) {}
 	//Coefficients
 	float _ks, _kd, _absorption;
+	const float _ref_index;
 };

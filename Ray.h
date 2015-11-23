@@ -4,7 +4,7 @@
 class Ray {
 public:
 	Ray() = default;
-	Ray(glm::vec3 origin, glm::vec3 direction) : _origin(origin) {
+	Ray(glm::vec3 origin, glm::vec3 direction, float refractiveIndex = 1.0f) : _origin(origin) , _index(refractiveIndex) {
 		_direction = glm::normalize(direction);
 		//Save the inverse direction, only need to be computed once
 		_inv_direction.x = 1.0f / _direction.x;
@@ -16,4 +16,5 @@ public:
 	glm::vec3 _inv_direction;
 	//For ray tracing
 	float _importance;
+	float _index;
 };

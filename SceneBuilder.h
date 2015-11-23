@@ -8,6 +8,7 @@
 #include "DummyBRDF.h"
 #include "DiffuseBRDF.h"
 #include "OrenNayarBRDF.h"
+#include "TransparentBRDF.h"
 /// This is just an incapsulation of the creation of a scene object.
 class SceneBuilder {
 public:
@@ -19,6 +20,8 @@ public:
 		std::shared_ptr<DiffuseBRDF> second_diffuse_brdf = std::make_shared<DiffuseBRDF>();
 		second_diffuse_brdf->set_absorption(0.0f);
 		std::shared_ptr<OrenNayarBRDF> oren_diffuse_brdf = std::make_shared<OrenNayarBRDF>();
+
+		std::shared_ptr<TransparentBRDF> transparent_brdf = std::make_shared<TransparentBRDF>();
 		//Add light sources to both vectors, easier to compare if light was intersected
 		std::shared_ptr<Plane> area_light1 = std::make_shared<Plane>(glm::vec3(5.0f, 14.99f, 5.0f), std::make_shared<Material>(glm::vec3(1.0f), glm::vec3(1.0f), dummy_brdf), glm::vec3(0, -1, 0), 2.5f, 2.5f, 2.5f);
 		std::shared_ptr<Plane> area_light2 = std::make_shared<Plane>(glm::vec3(-5.0f, 14.99f, 5.0f), std::make_shared<Material>(glm::vec3(1.0f), glm::vec3(1.0f), dummy_brdf), glm::vec3(0, -1, 0), 2.5f, 2.5f, 2.5f);

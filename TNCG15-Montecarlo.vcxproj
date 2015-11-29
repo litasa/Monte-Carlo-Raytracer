@@ -146,7 +146,9 @@
     <ClInclude Include="BRDF.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DiffuseBRDF.h" />
+    <ClInclude Include="DiffuseMaterial.h" />
     <ClInclude Include="DummyBRDF.h" />
+    <ClInclude Include="DummyMaterial.h" />
     <ClInclude Include="kdTree.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="OrenNayarBRDF.h" />

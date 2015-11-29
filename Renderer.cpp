@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "glm\gtc\constants.hpp"
 #include "glm\gtc\random.hpp"
+#include "DiffuseMaterial.h"
 
 glm::vec3 Renderer::radiance(const Ray &ray) {
 	//Find the nearest intersection point and its primitive
@@ -37,6 +38,7 @@ glm::vec3 Renderer::compute_direct_light(const Intersection &intersection) {
 		//The BRDF determines the probability of the outgoing radiance in this point in our radiance direction.
 		//glm::vec3 brdf = material->get_brdf_color_mult(normal, glm::normalize(sample_point - intersection._point), intersection._radiance_direction);
 		glm::vec3 brdf_contribution = material->get_color()*material->get_reflect_brdf()->get(normal, glm::normalize(sample_point - intersection._point), intersection._radiance_direction);
+		
 		estimated_radiance += light->_material->get_emitted() * brdf_contribution * radiance_transfer(intersection, light, sample_point) / probability;
 	}
 	//For debugging
@@ -66,8 +68,11 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 			glm::vec3 surface_normal = intersection.get_normal();
 			//Check if we have a diffuse reflector
 			if (material->get_type() == Material::MATERIALType::DIFFUSE) {
+				//We know we are handling a diffuse material, so we can cast the material to diffuse
+				auto diffuseMaterial = std::dynamic_pointer_cast<DiffuseMaterial>(material);
 				//Find a random direction on the hemisphere on the surface
-				glm::vec3 diffuse_dir = compute_diffuse_ray(surface_normal);
+				glm::vec3 diffuse_dir = diffuseMaterial->get_ray_dir(surface_normal);
+				
 				Ray indirect_ray(intersection._point, diffuse_dir);
 				Intersection indirect(-diffuse_dir);
 				find_nearest(indirect_ray, indirect);

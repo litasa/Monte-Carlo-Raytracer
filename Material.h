@@ -18,11 +18,11 @@ public:
 	}
 
 	enum class MATERIALType { DIFFUSE, TRANSPARENT, SPECULAR, DUMMY };
-	~Material() {}
+	virtual ~Material() {}
 	//Getters for all its members
 	const glm::vec3 &get_color() const { return _color; }
 	const glm::vec3 &get_emitted() const { return _emitted; }
-	const MATERIALType get_type() const { return _type; }
+	virtual MATERIALType get_type() = 0; //make polymorphic
 	const std::shared_ptr<BRDF> &get_brdf() const { return _reflect_brdf; }
 	const std::shared_ptr<BRDF> &get_reflect_brdf() const { return _reflect_brdf; }
 	const std::shared_ptr<BRDF> &get_refract_brdf() const { return _refract_brdf; }

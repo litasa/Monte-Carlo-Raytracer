@@ -28,6 +28,9 @@
     <Filter Include="Header Files\Materials &amp; BRDFS\BRDF">
       <UniqueIdentifier>{06ae0979-b3df-4d8c-805e-1854d6a1a3d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Materials &amp; BRDFS\Material">
+      <UniqueIdentifier>{467487b4-ce04-4c01-b97f-ec72bb666290}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -50,9 +53,6 @@
     </ClInclude>
     <ClInclude Include="kdTree.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files\Materials &amp; BRDFS</Filter>
     </ClInclude>
     <ClInclude Include="Plane.h">
       <Filter>Header Files\Primitives</Filter>
@@ -83,6 +83,15 @@
     </ClInclude>
     <ClInclude Include="BRDF.h">
       <Filter>Header Files\Materials &amp; BRDFS\BRDF</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\Materials &amp; BRDFS\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="DiffuseMaterial.h">
+      <Filter>Header Files\Materials &amp; BRDFS\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="DummyMaterial.h">
+      <Filter>Header Files\Materials &amp; BRDFS\Material</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Primitives">
       <UniqueIdentifier>{4c0bc3da-726d-47e9-a613-58c84eccb97a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Materials &amp; BRDFS\BRDF">
+      <UniqueIdentifier>{06ae0979-b3df-4d8c-805e-1854d6a1a3d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -48,15 +51,6 @@
     <ClInclude Include="kdTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BRDF.h">
-      <Filter>Header Files\Materials &amp; BRDFS</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseBRDF.h">
-      <Filter>Header Files\Materials &amp; BRDFS</Filter>
-    </ClInclude>
-    <ClInclude Include="DummyBRDF.h">
-      <Filter>Header Files\Materials &amp; BRDFS</Filter>
-    </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Header Files\Materials &amp; BRDFS</Filter>
     </ClInclude>
@@ -75,11 +69,20 @@
     <ClInclude Include="PixelBuffer.h">
       <Filter>Header Files\File Writer</Filter>
     </ClInclude>
-    <ClInclude Include="OrenNayarBRDF.h">
-      <Filter>Header Files\Materials &amp; BRDFS</Filter>
+    <ClInclude Include="DiffuseBRDF.h">
+      <Filter>Header Files\Materials &amp; BRDFS\BRDF</Filter>
     </ClInclude>
-    <ClInclude Include="TransparentBRDF.h">
-      <Filter>Header Files\Materials &amp; BRDFS</Filter>
+    <ClInclude Include="DummyBRDF.h">
+      <Filter>Header Files\Materials &amp; BRDFS\BRDF</Filter>
+    </ClInclude>
+    <ClInclude Include="OrenNayarBRDF.h">
+      <Filter>Header Files\Materials &amp; BRDFS\BRDF</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectionBRDF.h">
+      <Filter>Header Files\Materials &amp; BRDFS\BRDF</Filter>
+    </ClInclude>
+    <ClInclude Include="BRDF.h">
+      <Filter>Header Files\Materials &amp; BRDFS\BRDF</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

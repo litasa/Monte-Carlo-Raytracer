@@ -157,7 +157,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneBuilder.h" />
-    <ClInclude Include="TransparentBRDF.h" />
+    <ClInclude Include="ReflectionBRDF.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="TgaWriter.h" />
   </ItemGroup>

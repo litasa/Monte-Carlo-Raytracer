@@ -35,8 +35,9 @@ glm::vec3 Renderer::compute_direct_light(const Intersection &intersection) {
 		sample_point = light->uniform_random_sample();
 		float probability = _light_probability * light->uniform_pdf(); //Maybe something better?
 		//The BRDF determines the probability of the outgoing radiance in this point in our radiance direction.
-		glm::vec3 brdf = material->get_brdf_color_mult(normal, glm::normalize(sample_point - intersection._point), intersection._radiance_direction);
-		estimated_radiance += light->_material->get_emitted() * brdf * radiance_transfer(intersection, light, sample_point) / probability;
+		//glm::vec3 brdf = material->get_brdf_color_mult(normal, glm::normalize(sample_point - intersection._point), intersection._radiance_direction);
+		glm::vec3 brdf_contribution = material->get_color()*material->get_reflect_brdf()->get(normal, glm::normalize(sample_point - intersection._point), intersection._radiance_direction);
+		estimated_radiance += light->_material->get_emitted() * brdf_contribution * radiance_transfer(intersection, light, sample_point) / probability;
 	}
 	//For debugging
 	mutex.lock();
@@ -64,7 +65,7 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 		for (int i = 0; i < rays; ++i) {
 			glm::vec3 surface_normal = intersection.get_normal();
 			//Check if we have a diffuse reflector
-			if (brdf->get_type() == BRDF::BRDFType::DIFFUSE || brdf->get_type() == BRDF::BRDFType::ORENDIFFUSE) {
+			if (material->get_type() == Material::MATERIALType::DIFFUSE) {
 				//Find a random direction on the hemisphere on the surface
 				glm::vec3 diffuse_dir = compute_diffuse_ray(surface_normal);
 				Ray indirect_ray(intersection._point, diffuse_dir);
@@ -73,12 +74,13 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 				//If some object is transfering radiance to our intersection point
 				if (indirect._point != Primitive::_no_intersection) {
 					//The BRDF determines the probability of the outgoing radiance in this point in our radiance direction.
-					glm::vec3 brdf_contribution = material->get_brdf_color_mult(surface_normal, diffuse_dir, intersection._radiance_direction);
+					glm::vec3 brdf_contribution = material->get_color()*brdf->get(surface_normal, diffuse_dir, intersection._radiance_direction);
 					estimated_radiance += compute_radiance(indirect, depth + 1) * brdf_contribution * glm::two_pi<float>(); //PDF is two pi, uniform sampling
 				}
 			}
-			else if (brdf->get_type() == BRDF::BRDFType::TRANSPARENT)
+			else if (material->get_type() == Material::MATERIALType::TRANSPARENT)
 			{
+				//http://cg.informatik.uni-freiburg.de/course_notes/graphics2_07_materials.pdf //
 				float n1 = intersection._from_ref_index;
 				float n2 = intersection._to_ref_index;
 				//calculate the specular component
@@ -109,7 +111,7 @@ glm::vec3 Renderer::compute_indirect_light(const Intersection &intersection, int
 				//here we should add some radiance contribution based on the specular and refracted rays
 				//using small angle approximation
 			}
-			else if (brdf->get_type() == BRDF::BRDFType::DUMMY)
+			else if (material->get_type() == Material::MATERIALType::DUMMY)
 			{
 				//this is for the lights. We wont do anything here			
 			}
